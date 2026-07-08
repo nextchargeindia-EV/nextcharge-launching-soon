@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
+                
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                
                 const submitBtn = form.querySelector('button[type="submit"]');
                 if (!submitBtn) return;
                 

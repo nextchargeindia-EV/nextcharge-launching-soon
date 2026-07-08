@@ -125,17 +125,17 @@
                 <form class="glass-form" id="feedbackForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
                     <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
                     <div class="form-row">
-                        <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name">
+                        <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name" minlength="2" maxlength="50" pattern="[A-Za-z\s\.\-]+" title="Please enter a valid name">
                         <input type="email" name="email" placeholder="Email Address" required aria-label="Email Address">
                     </div>
                     <div class="form-row">
-                        <input type="tel" name="phone" placeholder="Phone Number" required aria-label="Phone Number">
-                        <input type="text" name="location" placeholder="City / Location" required aria-label="City or Location">
+                        <input type="tel" name="phone" placeholder="Phone Number" required aria-label="Phone Number" pattern="[\+0-9\s\-\(\)]{7,15}" title="Please enter a valid phone number (7-15 digits)">
+                        <input type="text" name="location" placeholder="City / Location" required aria-label="City or Location" minlength="2" maxlength="100">
                     </div>
                     <div class="form-row">
                         <textarea name="problem"
                             placeholder="Describe the problems you face (e.g., broken chargers, payment issues...)"
-                            rows="4" required aria-label="Describe your problem"></textarea>
+                            rows="4" required aria-label="Describe your problem" minlength="10" maxlength="1000"></textarea>
                     </div>
                     <button type="submit" class="btn-primary full-width">
                         <span>Share Feedback</span>
@@ -210,13 +210,13 @@
                     <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
                     <h3 class="form-title">Request a Consultation</h3>
                     <div class="form-row">
-                        <input type="text" name="partner_name" placeholder="Name" required aria-label="Partner Name">
+                        <input type="text" name="partner_name" placeholder="Name" required aria-label="Partner Name" minlength="2" maxlength="50" pattern="[A-Za-z\s\.\-]+" title="Please enter a valid name">
                         <input type="text" name="business_type" placeholder="Business Type (Hotel, Mall, etc.)"
-                            required aria-label="Business Type">
+                            required aria-label="Business Type" minlength="2" maxlength="100">
                     </div>
                     <div class="form-row">
                         <input type="email" name="partner_email" placeholder="Email Address" required aria-label="Partner Email">
-                        <input type="tel" name="partner_phone" placeholder="Phone Number" required aria-label="Partner Phone Number">
+                        <input type="tel" name="partner_phone" placeholder="Phone Number" required aria-label="Partner Phone Number" pattern="[\+0-9\s\-\(\)]{7,15}" title="Please enter a valid phone number (7-15 digits)">
                     </div>
                     <button type="submit" class="btn-primary full-width">
                         <span>Partner With Us</span>

@@ -74,4 +74,24 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Partner Form
     handleFormSubmit('partnerForm', 'partnerMessage', "Thanks for your interest! Our team will reach out to you shortly.");
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navMenuWrapper = document.getElementById('navMenuWrapper');
+    const navLinksList = document.querySelectorAll('.nav-links a');
+
+    if (mobileMenuBtn && navMenuWrapper) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('active');
+            navMenuWrapper.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked
+        navLinksList.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                navMenuWrapper.classList.remove('active');
+            });
+        });
+    }
 });

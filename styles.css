@@ -37,6 +37,7 @@ body {
     height: 100%;
     z-index: -1;
     overflow: hidden;
+    background-color: var(--bg-color-1);
 }
 
 #bg-video {

@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const postSlugInput = document.getElementById('postSlugInput');
     const excerptInput = document.getElementById('excerptInput');
     const coverUploadZone = document.getElementById('coverUploadZone');
-    const coverImageInput = document.getElementById('coverImageInput');
+    const coverImageUrlInput = document.getElementById('coverImageUrlInput');
     const coverPreview = document.getElementById('coverPreview');
     const categorySelect = document.getElementById('categorySelect');
     const tagsInputField = document.getElementById('tagsInputField');
@@ -124,54 +124,17 @@ document.addEventListener('DOMContentLoaded', () => {
             theme: 'snow',
             placeholder: 'Write your post content here...',
             modules: {
-                toolbar: {
-                    container: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        ['blockquote', 'code-block'],
-                        ['link', 'image'],
-                        [{ 'align': [] }],
-                        ['clean']
-                    ],
-                    handlers: {
-                        image: imageHandler
-                    }
-                }
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image'],
+                    [{ 'align': [] }],
+                    ['clean']
+                ]
             }
         });
-    }
-
-    // ===== Custom Image Handler (uploads to Firebase Storage) =====
-
-    function imageHandler() {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
-        input.click();
-
-        input.onchange = async () => {
-            const file = input.files[0];
-            if (!file) return;
-
-            showToast('Uploading image...');
-
-            try {
-                const fileName = `blog-images/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '')}`;
-                const ref = storage.ref(fileName);
-                await ref.put(file);
-                const url = await ref.getDownloadURL();
-
-                const range = quillEditor.getSelection(true);
-                quillEditor.insertEmbed(range.index, 'image', url);
-                quillEditor.setSelection(range.index + 1);
-
-                showToast('Image inserted!');
-            } catch (error) {
-                console.error('Image upload failed:', error);
-                showToast('Failed to upload image', 'error');
-            }
-        };
     }
 
     // ===== Fetch All Posts =====
@@ -315,80 +278,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Click on tags wrapper focuses the input
     tagsContainer.addEventListener('click', () => tagsInputField.focus());
 
-    // ===== Cover Image Upload =====
+    // ===== Cover Image URL listener =====
 
-    coverUploadZone.addEventListener('click', (e) => {
-        if (e.target.closest('.btn-remove-cover')) return;
-        coverImageInput.click();
-    });
-
-    coverUploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        coverUploadZone.style.borderColor = 'rgba(255, 90, 34, 0.6)';
-        coverUploadZone.style.background = 'rgba(255, 90, 34, 0.05)';
-    });
-
-    coverUploadZone.addEventListener('dragleave', () => {
-        coverUploadZone.style.borderColor = '';
-        coverUploadZone.style.background = '';
-    });
-
-    coverUploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        coverUploadZone.style.borderColor = '';
-        coverUploadZone.style.background = '';
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-            uploadCoverImage(file);
-        }
-    });
-
-    coverImageInput.addEventListener('change', () => {
-        const file = coverImageInput.files[0];
-        if (file) uploadCoverImage(file);
-    });
-
-    async function uploadCoverImage(file) {
-        const progressEl = document.getElementById('uploadProgress');
-        const progressBar = document.getElementById('uploadProgressBar');
-        progressEl.style.display = 'block';
-        progressBar.style.width = '0%';
-
-        try {
-            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '');
-            const fileName = `covers/${Date.now()}_${safeName}`;
-            const ref = storage.ref(fileName);
-            const uploadTask = ref.put(file);
-
-            uploadTask.on('state_changed', (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                progressBar.style.width = progress + '%';
-            });
-
-            await uploadTask;
-            currentCoverUrl = await ref.getDownloadURL();
-
-            coverPreview.src = currentCoverUrl;
+    coverImageUrlInput.addEventListener('input', () => {
+        const url = coverImageUrlInput.value.trim();
+        currentCoverUrl = url;
+        if (url) {
+            coverPreview.src = url;
             coverPreview.style.display = 'block';
             coverUploadZone.classList.add('has-image');
             document.getElementById('uploadText').style.display = 'none';
-            document.getElementById('removeCoverBtn').style.display = 'flex';
-
-            progressEl.style.display = 'none';
-            showToast('Cover image uploaded!');
-
-        } catch (error) {
-            console.error('Upload error:', error);
-            showToast('Failed to upload image', 'error');
-            progressEl.style.display = 'none';
+        } else {
+            resetCoverUI();
         }
-    }
-
-    // Remove cover image
-    document.getElementById('removeCoverBtn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        currentCoverUrl = '';
-        resetCoverUI();
     });
 
     function resetCoverUI() {
@@ -396,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
         coverPreview.src = '';
         coverUploadZone.classList.remove('has-image');
         document.getElementById('uploadText').style.display = 'block';
-        document.getElementById('removeCoverBtn').style.display = 'none';
     }
 
     // ===== Status Toggle =====
@@ -449,13 +350,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('seoTitleCount').textContent = `${(post.seoTitle || '').length}/60`;
             document.getElementById('seoDescCount').textContent = `${(post.seoDescription || '').length}/160`;
 
+            coverImageUrlInput.value = post.coverImageUrl || '';
             if (post.coverImageUrl) {
                 currentCoverUrl = post.coverImageUrl;
                 coverPreview.src = currentCoverUrl;
                 coverPreview.style.display = 'block';
                 coverUploadZone.classList.add('has-image');
                 document.getElementById('uploadText').style.display = 'none';
-                document.getElementById('removeCoverBtn').style.display = 'flex';
             } else {
                 currentCoverUrl = '';
                 resetCoverUI();
@@ -482,6 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statusLabel.textContent = 'Draft';
         seoTitleInput.value = '';
         seoDescInput.value = '';
+        coverImageUrlInput.value = '';
         currentCoverUrl = '';
         resetCoverUI();
         renderTags();

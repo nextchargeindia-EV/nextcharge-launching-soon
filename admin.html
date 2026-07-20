@@ -136,19 +136,14 @@
                     <div class="editor-sidebar">
                         <!-- Cover Image -->
                         <div class="sidebar-card">
-                            <h3>Cover Image</h3>
-                            <div class="cover-upload-zone" id="coverUploadZone">
-                                <img id="coverPreview" style="display: none;" alt="Cover preview">
-                                <button type="button" class="btn-remove-cover" id="removeCoverBtn"
-                                    style="display: none;" aria-label="Remove cover image">&times;</button>
-                                <div id="uploadText">
-                                    <div class="upload-icon">📷</div>
-                                    <p class="upload-hint">Drop image or click to upload</p>
+                            <h3>Cover Image URL</h3>
+                            <input type="url" class="seo-field" id="coverImageUrlInput" placeholder="Paste cover image URL here" style="margin-bottom: 12px;">
+                            <div class="cover-upload-zone" id="coverUploadZone" style="cursor: default; padding: 0; min-height: 120px; display: flex; align-items: center; justify-content: center; border-style: solid;">
+                                <img id="coverPreview" style="display: none; max-height: 140px; width: 100%; object-fit: cover;" alt="Cover preview">
+                                <div id="uploadText" style="padding: 20px;">
+                                    <div class="upload-icon">🖼️</div>
+                                    <p class="upload-hint">Preview will appear here</p>
                                 </div>
-                                <input type="file" id="coverImageInput" accept="image/*" style="display: none;">
-                            </div>
-                            <div class="upload-progress" id="uploadProgress" style="display: none;">
-                                <div class="upload-progress-bar" id="uploadProgressBar"></div>
                             </div>
                         </div>
 

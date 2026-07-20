@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('postTitle').textContent = post.title;
         document.getElementById('postDate').textContent = formatDate(post.createdAt);
         document.getElementById('postReadingTime').textContent = `${readingTime} min read`;
-        document.getElementById('postAuthor').textContent = post.author || 'NextCharge Team';
+        document.getElementById('postAuthor').textContent = 'NextCharge';
         document.getElementById('postBody').innerHTML = post.content || '';
 
         // Tags

@@ -100,4 +100,112 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // ===== Home Page Blog Section =====
+    const homeBlogGrid = document.getElementById('homeBlogGrid');
+    if (homeBlogGrid && typeof db !== 'undefined') {
+        db.collection('posts')
+            .where('status', '==', 'published')
+            .orderBy('createdAt', 'desc')
+            .limit(3)
+            .get()
+            .then(snapshot => {
+                homeBlogGrid.innerHTML = '';
+                if (snapshot.empty) {
+                    homeBlogGrid.innerHTML = `
+                        <div class="blog-empty" style="grid-column: 1 / -1; text-align: center; padding: 40px 0;">
+                            <div class="blog-empty-icon" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4;">📭</div>
+                            <h3>No articles published yet</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9375rem; margin-top: 4px;">Check back soon for latest insights!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const post = { id: doc.id, ...doc.data() };
+                    const card = createHomePostCard(post);
+                    homeBlogGrid.appendChild(card);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching home blog posts:", error);
+                homeBlogGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px 0;">
+                        <p>Unable to load latest articles at this moment.</p>
+                    </div>
+                `;
+            });
+    }
+
+    function calculateReadingTime(html) {
+        const text = (html || '').replace(/<[^>]*>/g, '');
+        const words = text.split(/\s+/).filter(w => w.length > 0).length;
+        return Math.max(1, Math.ceil(words / 200));
+    }
+
+    function formatDate(timestamp) {
+        if (!timestamp) return '';
+        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        return date.toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
+    function createHomePostCard(post) {
+        const readingTime = calculateReadingTime(post.content);
+        const card = document.createElement('article');
+        card.className = 'post-card';
+        card.setAttribute('role', 'link');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `Read: ${post.title}`);
+        
+        const imageContent = post.coverImageUrl
+            ? `<img src="${post.coverImageUrl}" alt="${escapeHtml(post.title)}" loading="lazy">`
+            : `<div class="post-card-placeholder">⚡</div>`;
+
+        const categoryBadge = post.category
+            ? `<span class="post-card-category">${escapeHtml(post.category)}</span>`
+            : '';
+
+        card.innerHTML = `
+            <div class="post-card-image">
+                ${imageContent}
+                ${categoryBadge}
+            </div>
+            <div class="post-card-body" style="text-align: left;">
+                <h3 class="post-card-title">${escapeHtml(post.title)}</h3>
+                <p class="post-card-excerpt">${escapeHtml(post.excerpt || '')}</p>
+                <div class="post-card-meta">
+                    <span class="post-card-date">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+                        ${formatDate(post.createdAt)}
+                    </span>
+                    <span class="post-card-reading-time">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        ${readingTime} min read
+                    </span>
+                </div>
+            </div>
+        `;
+
+        const navigate = () => {
+            window.location.href = `blog.html#post/${post.slug}`;
+        };
+
+        card.addEventListener('click', navigate);
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') navigate();
+        });
+
+        return card;
+    }
 });

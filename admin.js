@@ -479,6 +479,71 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('newPostBtn').addEventListener('click', () => openEditor());
     document.getElementById('backToDashboard').addEventListener('click', showDashboard);
 
+    // ===== Live Post Preview =====
+
+    function calculateReadingTime(html) {
+        const text = (html || '').replace(/<[^>]*>/g, '');
+        const words = text.split(/\s+/).filter(w => w.length > 0).length;
+        return Math.max(1, Math.ceil(words / 200));
+    }
+
+    const previewPostBtn = document.getElementById('previewPostBtn');
+    const previewModal = document.getElementById('previewModal');
+    const closePreviewBtn = document.getElementById('closePreviewBtn');
+
+    if (previewPostBtn && previewModal) {
+        previewPostBtn.addEventListener('click', () => {
+            const title = postTitleInput.value.trim() || 'Untitled Post';
+            const category = categorySelect.value;
+            const coverUrl = coverImageUrlInput.value.trim() || currentCoverUrl;
+            const content = quillEditor ? quillEditor.root.innerHTML : '';
+            const readingTime = calculateReadingTime(content);
+
+            const heroEl = document.getElementById('previewHeroImage');
+            if (coverUrl) {
+                heroEl.innerHTML = `<img src="${escapeHtml(coverUrl)}" alt="${escapeHtml(title)}">`;
+                heroEl.style.display = 'block';
+            } else {
+                heroEl.innerHTML = '';
+                heroEl.style.display = 'none';
+            }
+
+            const catEl = document.getElementById('previewCategory');
+            if (category) {
+                catEl.textContent = category;
+                catEl.style.display = 'inline-block';
+            } else {
+                catEl.style.display = 'none';
+            }
+
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewDate').textContent = new Date().toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('previewReadingTime').textContent = `${readingTime} min read`;
+            document.getElementById('previewBody').innerHTML = content || '<p style="color: #64748B;">No content written yet.</p>';
+
+            previewModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    if (closePreviewBtn && previewModal) {
+        closePreviewBtn.addEventListener('click', () => {
+            previewModal.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                previewModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
     // ===== Utility =====
 
     function escapeHtml(str) {

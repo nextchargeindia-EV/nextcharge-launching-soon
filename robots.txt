@@ -5,7 +5,13 @@ Disallow: /admin.js
 Disallow: /admin.css
 Disallow: /firebase-config.js
 
-# Explicitly welcome AI Search Crawlers
+# Explicitly welcome Search Engine & AI Search Crawlers for GEO
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
 User-agent: GPTBot
 Allow: /
 Disallow: /admin.html
@@ -27,3 +33,4 @@ Allow: /
 Disallow: /admin.html
 
 Sitemap: https://www.nextcharge.in/sitemap.xml
+

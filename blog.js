@@ -220,12 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tagsEl.style.display = 'none';
         }
 
-        // SEO
-        document.title = `${post.seoTitle || post.title} — NextCharge Blog`;
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
-            metaDesc.content = post.seoDescription || post.excerpt || '';
-        }
+        // SEO & GEO dynamic tag updates
+        updatePostSeo(post);
 
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'instant' });
@@ -244,6 +240,76 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('scroll', scrollHandler, { passive: true });
     }
 
+    // ===== Dynamic SEO Helper =====
+
+    function updatePostSeo(post) {
+        const postUrl = `https://www.nextcharge.in/blog.html#post/${post.slug}`;
+        const desc = post.seoDescription || post.excerpt || 'EV charging guide and article on NextCharge.';
+        const title = `${post.seoTitle || post.title} — NextCharge Blog`;
+
+        document.title = title;
+
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.content = desc;
+
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.href = postUrl;
+
+        setMetaProperty('og:title', title);
+        setMetaProperty('og:description', desc);
+        setMetaProperty('og:url', postUrl);
+        if (post.coverImageUrl) setMetaProperty('og:image', post.coverImageUrl);
+
+        setMetaName('twitter:title', title);
+        setMetaName('twitter:description', desc);
+        setMetaName('twitter:url', postUrl);
+        if (post.coverImageUrl) setMetaName('twitter:image', post.coverImageUrl);
+
+        let postSchema = document.getElementById('dynamicArticleSchema');
+        if (!postSchema) {
+            postSchema = document.createElement('script');
+            postSchema.id = 'dynamicArticleSchema';
+            postSchema.type = 'application/ld+json';
+            document.head.appendChild(postSchema);
+        }
+
+        const pubDate = post.createdAt ? (post.createdAt.toDate ? post.createdAt.toDate().toISOString() : new Date(post.createdAt).toISOString()) : new Date().toISOString();
+
+        postSchema.textContent = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": post.title,
+            "description": desc,
+            "image": post.coverImageUrl || "https://www.nextcharge.in/nexq-logo.png",
+            "datePublished": pubDate,
+            "dateModified": pubDate,
+            "mainEntityOfPage": postUrl,
+            "author": {
+                "@type": "Organization",
+                "name": "NextCharge Editorial Team",
+                "url": "https://www.nextcharge.in/"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "NextCharge",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://www.nextcharge.in/nexq-logo.png"
+                }
+            }
+        });
+    }
+
+    function setMetaProperty(prop, content) {
+        const el = document.querySelector(`meta[property="${prop}"]`);
+        if (el) el.content = content;
+    }
+
+    function setMetaName(name, content) {
+        const el = document.querySelector(`meta[name="${name}"]`);
+        if (el) el.content = content;
+    }
+
     // ===== Show Listing =====
 
     function showListing() {
@@ -254,8 +320,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.title = 'Blog — NextCharge | EV Charging Insights & Updates';
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc) {
-            metaDesc.content = 'Stay updated with the latest news, tips, and insights about EV charging in India from NextCharge.';
+            metaDesc.content = 'Stay updated with the latest news, EV route guides, charging station reviews, and tips about EV charging in India from NextCharge.';
         }
+
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.href = 'https://www.nextcharge.in/blog.html';
+
+        const postSchema = document.getElementById('dynamicArticleSchema');
+        if (postSchema) postSchema.remove();
 
         if (scrollHandler) {
             window.removeEventListener('scroll', scrollHandler);

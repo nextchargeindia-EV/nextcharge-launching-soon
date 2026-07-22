@@ -78,10 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        const navigate = () => { window.location.hash = `post/${post.slug}`; };
+        const navigate = (e) => {
+            if (e) e.preventDefault();
+            const cleanSlug = (post.slug || '').replace(/^\/+/, '').replace(/^post\//, '').replace(/^\/+/, '');
+            const targetUrl = `/blog/${cleanSlug}`;
+            try {
+                history.pushState({ slug: cleanSlug }, '', targetUrl);
+            } catch (err) {
+                window.location.hash = `blog/${cleanSlug}`;
+            }
+            showPost(cleanSlug);
+        };
         card.addEventListener('click', navigate);
         card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') navigate();
+            if (e.key === 'Enter') navigate(e);
         });
 
         return card;
@@ -243,7 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== Dynamic SEO Helper =====
 
     function updatePostSeo(post) {
-        const postUrl = `https://www.nextcharge.in/blog.html#post/${post.slug}`;
+        const cleanSlug = (post.slug || '').replace(/^\/+/, '').replace(/^post\//, '').replace(/^\/+/, '');
+        const postUrl = `https://www.nextcharge.in/blog/${cleanSlug}`;
         const desc = post.seoDescription || post.excerpt || 'EV charging guide and article on NextCharge.';
         const title = `${post.seoTitle || post.title} — NextCharge Blog`;
 
@@ -335,17 +346,59 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ===== Hash Routing =====
+    // Back to blog button handler
+    const postBackBtn = document.getElementById('postBackBtn');
+    if (postBackBtn) {
+        postBackBtn.addEventListener('click', (e) => {
+            if (e) e.preventDefault();
+            try {
+                history.pushState(null, '', '/blog.html');
+            } catch (err) {
+                window.location.hash = '';
+            }
+            showListing();
+        });
+    }
+
+    // ===== Clean URL Routing =====
+
+    function getSlugFromUrl() {
+        // 1. Pathname format: /blog/ev-charging-cost-in-india or /blog/tata-nexon-ev-charging-guide
+        const path = window.location.pathname;
+        const pathMatch = path.match(/\/blog\/(.+)$/);
+        if (pathMatch && pathMatch[1]) {
+            return decodeURIComponent(pathMatch[1]).replace(/^\/+/, '').replace(/^post\//, '');
+        }
+
+        // 2. Query string format: ?post=ev-charging-cost-in-india
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('post')) {
+            return params.get('post').replace(/^\/+/, '').replace(/^post\//, '');
+        }
+
+        // 3. Clean hash format: #blog/slug or #post/slug or #slug
+        const hash = window.location.hash.slice(1);
+        if (hash) {
+            let cleanHash = decodeURIComponent(hash).replace(/^\/+/, '');
+            if (cleanHash.startsWith('post/')) cleanHash = cleanHash.replace(/^post\//, '');
+            if (cleanHash.startsWith('blog/')) cleanHash = cleanHash.replace(/^blog\//, '');
+            cleanHash = cleanHash.replace(/^\/+/, '');
+            if (cleanHash) return cleanHash;
+        }
+
+        return null;
+    }
 
     function handleRoute() {
-        const hash = window.location.hash.slice(1);
-        if (hash.startsWith('post/')) {
-            showPost(hash.replace('post/', ''));
+        const slug = getSlugFromUrl();
+        if (slug) {
+            showPost(slug);
         } else {
             showListing();
         }
     }
 
+    window.addEventListener('popstate', handleRoute);
     window.addEventListener('hashchange', handleRoute);
 
     // ===== Search =====

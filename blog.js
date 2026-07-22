@@ -81,12 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const navigate = (e) => {
             if (e) e.preventDefault();
             const cleanSlug = normalizeSlug(post.slug || post.id);
-            const targetUrl = `?post=${encodeURIComponent(cleanSlug)}`;
-            try {
-                history.pushState({ slug: cleanSlug }, '', targetUrl);
-            } catch (err) {
-                window.location.hash = `blog/${cleanSlug}`;
-            }
+            window.location.hash = cleanSlug;
             showPost(cleanSlug);
         };
         card.addEventListener('click', navigate);
@@ -256,11 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('scroll', scrollHandler, { passive: true });
     }
 
-    // ===== Dynamic SEO Helper =====
-
+    // Dynamic SEO Helper
     function updatePostSeo(post) {
-        const cleanSlug = (post.slug || '').replace(/^\/+/, '').replace(/^post\//, '').replace(/^\/+/, '');
-        const postUrl = `https://www.nextcharge.in/blog/${cleanSlug}`;
+        const cleanSlug = normalizeSlug(post.slug || post.id);
+        const postUrl = `https://www.nextcharge.in/blog.html#${cleanSlug}`;
         const desc = post.seoDescription || post.excerpt || 'EV charging guide and article on NextCharge.';
         const title = `${post.seoTitle || post.title} — NextCharge Blog`;
 
@@ -357,11 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (postBackBtn) {
         postBackBtn.addEventListener('click', (e) => {
             if (e) e.preventDefault();
-            try {
-                history.pushState(null, '', window.location.pathname || '/blog.html');
-            } catch (err) {
-                window.location.hash = '';
-            }
+            window.location.hash = '';
             showListing();
         });
     }

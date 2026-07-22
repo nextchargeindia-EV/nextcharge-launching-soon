@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const navigate = (e) => {
             if (e) e.preventDefault();
-            const cleanSlug = (post.slug || '').replace(/^\/+/, '').replace(/^post\//, '').replace(/^\/+/, '');
-            const targetUrl = `?post=${cleanSlug}`;
+            const cleanSlug = normalizeSlug(post.slug || post.id);
+            const targetUrl = `?post=${encodeURIComponent(cleanSlug)}`;
             try {
                 history.pushState({ slug: cleanSlug }, '', targetUrl);
             } catch (err) {
@@ -179,12 +179,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return btn;
     }
 
+    // ===== Slug Normalizer =====
+
+    function normalizeSlug(str) {
+        if (!str) return '';
+        return String(str).trim().toLowerCase().replace(/^\/+/, '').replace(/^post\//, '').replace(/^blog\//, '').replace(/^\/+/, '').replace(/\/+$/, '');
+    }
+
     // ===== Individual Post View =====
 
     function showPost(slug) {
-        const post = allPosts.find(p => p.slug === slug);
+        const targetSlug = normalizeSlug(slug);
+        const post = allPosts.find(p => normalizeSlug(p.slug) === targetSlug || normalizeSlug(p.id) === targetSlug);
         if (!post) {
-            window.location.hash = '';
+            console.warn('Post not found for slug:', slug);
+            showListing();
             return;
         }
 
@@ -422,15 +431,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             loadingEl.style.display = 'none';
             buildCategoryTabs(allPosts);
+            renderPosts(allPosts);
 
-            // Only render listing if we're not on a post route
-            const hash = window.location.hash.slice(1);
-            if (hash.startsWith('post/')) {
-                renderPosts(allPosts);
-                showPost(hash.replace('post/', ''));
-            } else {
-                renderPosts(allPosts);
-            }
+            // Handle URL route cleanly after posts are fetched
+            handleRoute();
 
         } catch (error) {
             console.error('Error fetching posts:', error);

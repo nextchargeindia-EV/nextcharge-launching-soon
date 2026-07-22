@@ -221,12 +221,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('postAuthor').textContent = 'NextCharge';
         document.getElementById('postBody').innerHTML = post.content || '';
 
-        // Tags
+        // Tags (Hidden)
         const tagsEl = document.getElementById('postTags');
-        if (post.tags && post.tags.length > 0) {
-            tagsEl.innerHTML = post.tags.map(t => `<span class="post-tag">#${escapeHtml(t)}</span>`).join('');
-            tagsEl.style.display = 'flex';
-        } else {
+        if (tagsEl) {
             tagsEl.style.display = 'none';
         }
 

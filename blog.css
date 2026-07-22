@@ -722,3 +722,9 @@
     background: radial-gradient(circle, #8b5cf6, transparent 70%); /* Subtle violet */
 }
 
+/* Hide Tags */
+.post-tags, .post-tag {
+    display: none !important;
+}
+
+

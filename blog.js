@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const navigate = (e) => {
             if (e) e.preventDefault();
             const cleanSlug = (post.slug || '').replace(/^\/+/, '').replace(/^post\//, '').replace(/^\/+/, '');
-            const targetUrl = `/blog/${cleanSlug}`;
+            const targetUrl = `?post=${cleanSlug}`;
             try {
                 history.pushState({ slug: cleanSlug }, '', targetUrl);
             } catch (err) {
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
         postBackBtn.addEventListener('click', (e) => {
             if (e) e.preventDefault();
             try {
-                history.pushState(null, '', '/blog.html');
+                history.pushState(null, '', window.location.pathname || '/blog.html');
             } catch (err) {
                 window.location.hash = '';
             }

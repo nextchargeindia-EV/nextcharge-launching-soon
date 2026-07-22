@@ -81,7 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const navigate = (e) => {
             if (e) e.preventDefault();
             const cleanSlug = normalizeSlug(post.slug || post.id);
-            window.location.hash = cleanSlug;
+            const cleanUrl = '/blog/' + cleanSlug;
+            if (window.location.pathname !== cleanUrl) {
+                history.pushState({ slug: cleanSlug }, '', cleanUrl);
+            }
             showPost(cleanSlug);
         };
         card.addEventListener('click', navigate);
@@ -254,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dynamic SEO Helper
     function updatePostSeo(post) {
         const cleanSlug = normalizeSlug(post.slug || post.id);
-        const postUrl = `https://www.nextcharge.in/blog.html#${cleanSlug}`;
+        const postUrl = `https://www.nextcharge.in/blog/${cleanSlug}`;
         const desc = post.seoDescription || post.excerpt || 'EV charging guide and article on NextCharge.';
         const title = `${post.seoTitle || post.title} — NextCharge Blog`;
 
@@ -323,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== Show Listing =====
 
-    function showListing() {
+    function showListing(updateHistory = true) {
         blogListingView.style.display = 'block';
         postView.style.display = 'none';
         readingProgressBar.style.width = '0%';
@@ -344,6 +347,10 @@ document.addEventListener('DOMContentLoaded', () => {
             window.removeEventListener('scroll', scrollHandler);
             scrollHandler = null;
         }
+
+        if (updateHistory && (window.location.pathname.startsWith('/blog/') || window.location.hash || window.location.search)) {
+            history.pushState({ slug: null }, '', '/blog.html');
+        }
     }
 
     // Back to blog button handler
@@ -351,8 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (postBackBtn) {
         postBackBtn.addEventListener('click', (e) => {
             if (e) e.preventDefault();
-            window.location.hash = '';
-            showListing();
+            showListing(true);
         });
     }
 
@@ -388,9 +394,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleRoute() {
         const slug = getSlugFromUrl();
         if (slug) {
+            const cleanUrl = '/blog/' + slug;
+            if (window.location.pathname !== cleanUrl) {
+                history.replaceState({ slug: slug }, '', cleanUrl);
+            }
             showPost(slug);
         } else {
-            showListing();
+            showListing(false);
         }
     }
 

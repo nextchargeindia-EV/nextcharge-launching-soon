@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         const navigate = () => {
-            window.location.href = `blog.html#post/${post.slug}`;
+            window.location.href = `/blog/${post.slug || post.id}`;
         };
 
         card.addEventListener('click', navigate);

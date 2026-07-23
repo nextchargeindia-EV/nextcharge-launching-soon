@@ -7,6 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Core pages
     const staticPages: MetadataRoute.Sitemap = [
         { url: 'https://www.nextcharge.in/', lastModified: today, changeFrequency: 'daily', priority: 1.0 },
+        { url: 'https://www.nextcharge.in/about', lastModified: today, changeFrequency: 'monthly', priority: 0.9 },
         { url: 'https://www.nextcharge.in/blog', lastModified: today, changeFrequency: 'daily', priority: 0.9 },
     ];
 

@@ -41,6 +41,7 @@ export default function Navbar() {
 
             <div className={`nav-menu-wrapper${menuOpen ? ' active' : ''}`} id="navMenuWrapper">
                 <ul className="nav-links">
+                    <li><Link href="/about" onClick={() => setMenuOpen(false)}>About</Link></li>
                     <li><a href="/#feedback" onClick={(e) => handleSectionClick(e, '#feedback')}>Feedback</a></li>
                     <li><a href="/#app" onClick={(e) => handleSectionClick(e, '#app')}>App</a></li>
                     <li><a href="/#partners" onClick={(e) => handleSectionClick(e, '#partners')}>Partners</a></li>

@@ -1,6 +1,12 @@
 export default function Footer() {
     return (
         <footer className="footer">
+            <div className="footer-nav" style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '16px', fontSize: '0.9rem', flexWrap: 'wrap' }}>
+                <a href="/about" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>About Us</a>
+                <a href="/blog" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Blog</a>
+                <a href="/#feedback" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Feedback</a>
+                <a href="/#partners" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Partners</a>
+            </div>
             <div className="footer-contact">
                 <a href="mailto:contact@nextcharge.in">contact@nextcharge.in</a>
                 <a href="tel:+918208746187">+91 8208746187</a>

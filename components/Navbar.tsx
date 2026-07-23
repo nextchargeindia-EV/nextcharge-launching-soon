@@ -7,6 +7,19 @@ import Image from 'next/image';
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
 
+    const handleSectionClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+        setMenuOpen(false);
+        if (typeof window !== 'undefined' && window.location.pathname === '/') {
+            e.preventDefault();
+            const targetId = hash.replace('#', '');
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth' });
+                window.history.replaceState(null, '', hash);
+            }
+        }
+    };
+
     return (
         <nav className="navbar">
             <div className="logo">
@@ -28,9 +41,9 @@ export default function Navbar() {
 
             <div className={`nav-menu-wrapper${menuOpen ? ' active' : ''}`} id="navMenuWrapper">
                 <ul className="nav-links">
-                    <li><a href="/#feedback" onClick={() => setMenuOpen(false)}>Feedback</a></li>
-                    <li><a href="/#app" onClick={() => setMenuOpen(false)}>App</a></li>
-                    <li><a href="/#partners" onClick={() => setMenuOpen(false)}>Partners</a></li>
+                    <li><a href="/#feedback" onClick={(e) => handleSectionClick(e, '#feedback')}>Feedback</a></li>
+                    <li><a href="/#app" onClick={(e) => handleSectionClick(e, '#app')}>App</a></li>
+                    <li><a href="/#partners" onClick={(e) => handleSectionClick(e, '#partners')}>Partners</a></li>
                     <li><Link href="/blog" onClick={() => setMenuOpen(false)}>Blog</Link></li>
                 </ul>
 

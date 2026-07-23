@@ -87,6 +87,13 @@ export default function AdminDashboard() {
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Auto-save states
+    const [autoSaveStatus, setAutoSaveStatus] = useState<string | null>(null);
+    const [isAutoSaving, setIsAutoSaving] = useState(false);
+    const isRestoringDraftRef = useRef(false);
+
+    const getDraftKey = useCallback((id: string | null) => `nextcharge_draft_${id || 'new'}`, []);
+
     async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
         const files = e.target.files;
         if (!files || files.length === 0) return;
@@ -164,6 +171,95 @@ export default function AdminDashboard() {
     useEffect(() => {
         if (user) fetchPosts();
     }, [user, fetchPosts]);
+
+    // Auto restore draft on page load or refresh
+    useEffect(() => {
+        if (!user) return;
+        const activeDraftKey = localStorage.getItem('nextcharge_active_draft_key');
+        if (activeDraftKey) {
+            const rawDraft = localStorage.getItem(activeDraftKey);
+            if (rawDraft) {
+                try {
+                    const draft = JSON.parse(rawDraft);
+                    if (draft && (draft.title || draft.content)) {
+                        isRestoringDraftRef.current = true;
+                        setEditingPostId(draft.editingPostId || null);
+                        setPostTitle(draft.title || '');
+                        setPostSlug(draft.slug || '');
+                        setPostExcerpt(draft.excerpt || '');
+                        setPostContent(draft.content || '');
+                        setPostCategory(draft.category || '');
+                        setPostTags(draft.tags || []);
+                        setPostStatus(draft.status || false);
+                        setCoverImageUrl(draft.coverImageUrl || '');
+                        setSeoTitle(draft.seoTitle || '');
+                        setSeoDesc(draft.seoDesc || '');
+                        setView('editor');
+
+                        const timeStr = draft.savedAt ? new Date(draft.savedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : 'recently';
+                        setAutoSaveStatus(`Restored draft (${timeStr})`);
+                        showToast('Auto-restored your unsaved blog draft!');
+
+                        setTimeout(() => {
+                            isRestoringDraftRef.current = false;
+                        }, 300);
+                    }
+                } catch (e) {
+                    console.error('Error parsing restored draft:', e);
+                }
+            }
+        }
+    }, [user]);
+
+    // Auto-save draft to localStorage whenever fields change
+    useEffect(() => {
+        if (view !== 'editor' || isRestoringDraftRef.current) return;
+        if (!postTitle.trim() && !postContent.trim() && !postExcerpt.trim()) return;
+
+        setIsAutoSaving(true);
+        const timer = setTimeout(() => {
+            try {
+                const draftData = {
+                    editingPostId,
+                    title: postTitle,
+                    slug: postSlug,
+                    excerpt: postExcerpt,
+                    content: postContent,
+                    category: postCategory,
+                    tags: postTags,
+                    status: postStatus,
+                    coverImageUrl,
+                    seoTitle,
+                    seoDesc,
+                    savedAt: new Date().toISOString(),
+                };
+                const key = getDraftKey(editingPostId);
+                localStorage.setItem(key, JSON.stringify(draftData));
+                localStorage.setItem('nextcharge_active_draft_key', key);
+
+                const timeStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                setAutoSaveStatus(`Auto-saved at ${timeStr}`);
+            } catch (err) {
+                console.error('Failed to auto-save draft:', err);
+            } finally {
+                setIsAutoSaving(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [view, editingPostId, postTitle, postSlug, postExcerpt, postContent, postCategory, postTags, postStatus, coverImageUrl, seoTitle, seoDesc, getDraftKey]);
+
+    // Unsaved changes warning before tab close or refresh
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (view === 'editor' && (postTitle.trim() || postContent.trim())) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [view, postTitle, postContent]);
 
     // Login handler
     async function handleLogin(e: React.FormEvent) {
@@ -267,6 +363,12 @@ export default function AdminDashboard() {
                 if (error) throw error;
                 showToast('Post created successfully!');
             }
+            // Clear auto-saved local draft upon successful post save
+            const key = getDraftKey(editingPostId);
+            localStorage.removeItem(key);
+            localStorage.removeItem('nextcharge_active_draft_key');
+            setAutoSaveStatus(null);
+
             await fetchPosts();
             setView('dashboard');
             setEditingPostId(null);
@@ -416,6 +518,12 @@ export default function AdminDashboard() {
                                 <span>{editingPostId ? 'Edit Post' : 'New Post'}</span>
                             </button>
                             <div className="editor-actions">
+                                {autoSaveStatus && (
+                                    <div className={`auto-save-indicator ${isAutoSaving ? 'saving' : ''}`}>
+                                        <span className="auto-save-dot"></span>
+                                        <span>{isAutoSaving ? 'Saving draft...' : autoSaveStatus}</span>
+                                    </div>
+                                )}
                                 <button type="button" className="btn-preview" onClick={() => setShowPreviewModal(true)}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>

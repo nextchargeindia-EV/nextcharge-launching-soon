@@ -54,7 +54,12 @@ export const metadata: Metadata = {
         images: ["https://www.nextcharge.in/nexq-logo.png"],
     },
     icons: {
-        icon: "/q-app-icon.png",
+        icon: [
+            { url: "/q-app-icon.png", type: "image/png" },
+            { url: "/icon.png", type: "image/png" },
+        ],
+        shortcut: "/q-app-icon.png",
+        apple: "/apple-icon.png",
     },
 };
 

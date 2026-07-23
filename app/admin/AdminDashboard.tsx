@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
+import RichTextEditor from './RichTextEditor';
 
 interface Post {
     id: string;
@@ -441,12 +442,10 @@ export default function AdminDashboard() {
                                     <input type="text" className="editor-field slug-input" placeholder="post-url-slug" value={postSlug} onChange={e => setPostSlug(e.target.value)} />
                                 </div>
                                 <textarea className="editor-field excerpt-field" placeholder="Post excerpt — a brief summary shown on the blog listing..." rows={2} value={postExcerpt} onChange={e => setPostExcerpt(e.target.value)} />
-                                <textarea
-                                    className="editor-field"
-                                    placeholder="Write your post content here (HTML supported)..."
+                                <RichTextEditor
                                     value={postContent}
-                                    onChange={e => setPostContent(e.target.value)}
-                                    style={{ minHeight: '420px', fontFamily: "'Inter', monospace", fontSize: '0.9375rem', lineHeight: '1.8' }}
+                                    onChange={setPostContent}
+                                    placeholder="Write your blog post here with full rich text formatting..."
                                 />
                             </div>
 

@@ -44,15 +44,14 @@ const blogJsonLd = {
     },
 };
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 10;
 
 async function getAllPublishedPosts() {
     if (!isSupabaseConfigured) return [];
     try {
         const { data, error } = await supabase
             .from('posts')
-            .select('*')
+            .select('id, title, slug, excerpt, cover_image_url, category, tags, created_at')
             .eq('status', 'published')
             .order('created_at', { ascending: false });
 

@@ -7,8 +7,7 @@ import WaitlistForm from './WaitlistForm';
 import FeedbackForm from './FeedbackForm';
 import PartnerForm from './PartnerForm';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 10;
 
 async function getLatestPosts() {
     if (!isSupabaseConfigured) return [];

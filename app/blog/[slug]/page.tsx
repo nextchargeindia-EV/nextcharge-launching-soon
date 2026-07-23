@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -23,11 +24,10 @@ interface PostData {
     updated_at?: string;
 }
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 10;
 export const dynamicParams = true;
 
-async function getPost(slug: string): Promise<PostData | null> {
+const getPost = cache(async (slug: string): Promise<PostData | null> => {
     if (!isSupabaseConfigured) return null;
     const cleanSlug = (slug || '').trim().replace(/^\/+/g, '').replace(/\/+$/g, '');
     try {
@@ -44,7 +44,7 @@ async function getPost(slug: string): Promise<PostData | null> {
     } catch {
         return null;
     }
-}
+});
 
 export async function generateStaticParams() {
     if (!isSupabaseConfigured) return [];

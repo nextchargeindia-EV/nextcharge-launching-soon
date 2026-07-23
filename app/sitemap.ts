@@ -24,12 +24,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }
     }
 
-    const blogPages: MetadataRoute.Sitemap = (posts || []).map(post => ({
-        url: `https://www.nextcharge.in/blog/${post.slug}`,
-        lastModified: post.updated_at || post.created_at,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-    }));
+    const blogPages: MetadataRoute.Sitemap = (posts || []).map(post => {
+        const cleanSlug = (post.slug || '').replace(/^\/+/g, '').replace(/\/+$/g, '');
+        return {
+            url: `https://www.nextcharge.in/blog/${cleanSlug}`,
+            lastModified: post.updated_at || post.created_at,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+        };
+    });
 
     // City pages (Tier 1, Tier 2, Tier 3 Local SEO & GEO Hubs)
     const cities = [

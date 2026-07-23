@@ -23,18 +23,21 @@ interface PostData {
     updated_at?: string;
 }
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const dynamicParams = true;
 
 async function getPost(slug: string): Promise<PostData | null> {
     if (!isSupabaseConfigured) return null;
+    const cleanSlug = (slug || '').trim().replace(/^\/+/g, '').replace(/\/+$/g, '');
     try {
         const { data, error } = await supabase
             .from('posts')
             .select('*')
-            .eq('slug', slug)
+            .or(`slug.eq.${cleanSlug},slug.eq./${cleanSlug}`)
             .eq('status', 'published')
-            .single();
+            .limit(1)
+            .maybeSingle();
 
         if (error || !data) return null;
         return data;

@@ -29,10 +29,11 @@ function formatDate(dateStr: string): string {
 
 export default function BlogCard({ post, index = 0 }: { post: BlogPost; index?: number }) {
     const readingTime = calculateReadingTime(post.content);
+    const cleanSlug = (post.slug || '').replace(/^\/+/g, '').replace(/\/+$/g, '');
 
     return (
         <Link
-            href={`/blog/${post.slug}`}
+            href={`/blog/${cleanSlug}`}
             className="post-card"
             style={{
                 animationDelay: `${index * 0.08}s`,

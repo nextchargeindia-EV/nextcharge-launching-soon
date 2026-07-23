@@ -30,13 +30,18 @@ function escapeHtml(str: string): string {
     return div.innerHTML;
 }
 
+function cleanSlug(slugStr: string): string {
+    return (slugStr || '').trim().replace(/^\/+/g, '').replace(/\/+$/g, '');
+}
+
 function generateSlug(title: string): string {
-    return title
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
+    return cleanSlug(
+        title
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+    );
 }
 
 function parseTagList(tagsInput: string[] | string | undefined | null): string[] {
@@ -309,7 +314,7 @@ export default function AdminDashboard() {
             const post = allPosts.find(p => p.id === postId);
             if (!post) return;
             setPostTitle(post.title || '');
-            setPostSlug(post.slug || '');
+            setPostSlug(cleanSlug(post.slug || ''));
             setPostExcerpt(post.excerpt || '');
             setPostContent(post.content || '');
             setPostCategory(post.category || '');
@@ -347,7 +352,8 @@ export default function AdminDashboard() {
 
         setSaving(true);
         const finalTags = commitTagInput(tagInput);
-        const slug = postSlug.trim() || generateSlug(postTitle);
+        const rawSlug = postSlug.trim() || generateSlug(postTitle);
+        const slug = cleanSlug(rawSlug);
         const autoExcerpt = postExcerpt.trim() || postContent.replace(/<[^>]*>/g, '').substring(0, 160).trim();
 
         const postData = {

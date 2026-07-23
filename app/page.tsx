@@ -109,25 +109,34 @@ export default async function Home() {
 
                 {/* Business Partners Section */}
                 <section className="section-container" id="partners">
-                    <div className="section-content">
+                    <div className="section-content partner-section-content">
                         <h2 className="section-title">Partner with NextCharge</h2>
                         <p className="section-subtitle">Are you a hotel owner, commercial property owner, or fleet operator? Turn your parking space into a revenue-generating asset with our ultra-fast smart chargers.</p>
 
                         <div className="partner-cards">
                             <div className="partner-card">
-                                <Image src="/hotel.webp" alt="Hotel Owners" className="partner-img" width={400} height={180} style={{ objectFit: 'cover', width: '100%', height: 'auto' }} />
+                                <div className="partner-img-wrapper">
+                                    <Image src="/hotel.webp" alt="Hotel Owners" className="partner-img" width={400} height={200} style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
+                                    <span className="partner-badge">Hotels & Resorts</span>
+                                </div>
                                 <h3>Hotel Owners</h3>
-                                <p>Attract premium EV owners to stay at your property by offering reliable charging infrastructure.</p>
+                                <p>Attract premium EV drivers to stay at your property by offering reliable, high-speed charging infrastructure.</p>
                             </div>
                             <div className="partner-card">
-                                <Image src="/commercial.jpg" alt="Commercial Properties" className="partner-img" width={400} height={180} style={{ objectFit: 'cover', width: '100%', height: 'auto' }} />
+                                <div className="partner-img-wrapper">
+                                    <Image src="/commercial.jpg" alt="Commercial Properties" className="partner-img" width={400} height={200} style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
+                                    <span className="partner-badge">Malls & Retail</span>
+                                </div>
                                 <h3>Commercial Properties</h3>
-                                <p>Monetize your parking spaces and increase footfall to your malls, offices, or retail outlets.</p>
+                                <p>Monetize your parking spaces and increase customer dwell time & footfall across malls, offices, and hubs.</p>
                             </div>
                             <div className="partner-card">
-                                <Image src="/fleet.webp" alt="Fleet Operators" className="partner-img" width={400} height={180} style={{ objectFit: 'cover', width: '100%', height: 'auto' }} />
+                                <div className="partner-img-wrapper">
+                                    <Image src="/fleet.webp" alt="Fleet Operators" className="partner-img" width={400} height={200} style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
+                                    <span className="partner-badge">Fleets & Depots</span>
+                                </div>
                                 <h3>Fleet Operators</h3>
-                                <p>Smarter and reliable charging solutions tailored for trucks, logistic vehicles, and buses.</p>
+                                <p>Smarter, high-uptime charging solutions tailored for electric commercial fleets, logistics, and transit buses.</p>
                             </div>
                         </div>
 

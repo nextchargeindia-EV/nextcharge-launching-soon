@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AboutInteractive from './AboutInteractive';
+import './about.css';
 
 export const metadata: Metadata = {
     title: "About Us — NextCharge (NEXQ) | India's Smartest EV Charging Network",
@@ -249,83 +251,8 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* Why Choose NextCharge */}
-                <section className="container" style={{ padding: '80px 24px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2 className="section-title">What Makes NextCharge Different</h2>
-                        <p className="section-subtitle">Designed ground-up for Indian EV drivers and business partners.</p>
-                    </div>
-
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                            gap: '24px',
-                        }}
-                    >
-                        <div style={featureBoxStyle}>
-                            <h3 style={featureTitleStyle}>⚡ Universal Compatibility</h3>
-                            <p style={featureTextStyle}>
-                                CCS2 DC Fast Chargers and Type-2 AC Chargers supporting all major electric 4-wheelers, 3-wheelers, and 2-wheelers in India.
-                            </p>
-                        </div>
-                        <div style={featureBoxStyle}>
-                            <h3 style={featureTitleStyle}>🗺️ AI-Powered Trip Planner</h3>
-                            <p style={featureTextStyle}>
-                                Plan long intercity trips with pinpoint accuracy. Automatically suggests charging stops based on your vehicle model, AC usage, and battery state.
-                            </p>
-                        </div>
-                        <div style={featureBoxStyle}>
-                            <h3 style={featureTitleStyle}>🔒 Reliable Hardware & Telematics</h3>
-                            <p style={featureTextStyle}>
-                                Heavy-duty, liquid-cooled and air-cooled chargers built for Indian heat, monsoon weather, and power fluctuations with real-time remote diagnostics.
-                            </p>
-                        </div>
-                        <div style={featureBoxStyle}>
-                            <h3 style={featureTitleStyle}>🤝 Host & Partner Monetization</h3>
-                            <p style={featureTextStyle}>
-                                Turn your hotel, shopping mall, restaurant, or vacant land into a profitable charging station. We handle installation, maintenance, and revenue collection.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* FAQ Section for SEO & GEO */}
-                <section className="section-container" style={{ background: 'rgba(22, 26, 58, 0.4)' }}>
-                    <div className="container" style={{ maxWidth: '900px' }}>
-                        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                            <h2 className="section-title">Frequently Asked Questions</h2>
-                            <p className="section-subtitle">Everything you need to know about NextCharge (NEXQ)</p>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <div style={faqCardStyle}>
-                                <h3 style={faqQuestionStyle}>What is NextCharge (NEXQ)?</h3>
-                                <p style={faqAnswerStyle}>
-                                    NextCharge (NEXQ) is building India&apos;s smartest unified EV charging network. It combines high-speed DC charging stations, an AI-powered trip planner, and an all-in-one mobile app to make EV charging dependable and frictionless across Indian cities and national highways.
-                                </p>
-                            </div>
-                            <div style={faqCardStyle}>
-                                <h3 style={faqQuestionStyle}>How does NextCharge solve EV charging issues in India?</h3>
-                                <p style={faqAnswerStyle}>
-                                    NextCharge addresses offline chargers, fragmented app ecosystems, and range anxiety by deploying ultra-reliable fast chargers with 99.9% uptime monitoring, real-time station availability, transparent billing, and intelligent route planning tailored to Indian driving conditions.
-                                </p>
-                            </div>
-                            <div style={faqCardStyle}>
-                                <h3 style={faqQuestionStyle}>Which electric vehicles are compatible with NextCharge?</h3>
-                                <p style={faqAnswerStyle}>
-                                    NextCharge stations support universal charging standards including CCS2 DC fast charging and Type-2 AC charging, making them compatible with all major EV brands in India such as Tata Motors (Nexon, Punch, Tiago EV), MG (ZS EV, Comet), Hyundai (Ioniq 5), Mahindra (XUV400), BYD, Kia, and commercial fleets.
-                                </p>
-                            </div>
-                            <div style={faqCardStyle}>
-                                <h3 style={faqQuestionStyle}>How can property hosts partner with NextCharge?</h3>
-                                <p style={faqAnswerStyle}>
-                                    Commercial property owners, hotel operators, highway restaurants, and parking space owners can partner with NextCharge to install EV fast chargers on their premises, turning idle land or parking lots into high-yield revenue assets.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                {/* Interactive Components Section */}
+                <AboutInteractive />
 
                 {/* Call To Action Banner */}
                 <section className="container" style={{ padding: '80px 24px', textAlign: 'center' }}>
@@ -337,10 +264,10 @@ export default function AboutPage() {
                             Join our early access waitlist to receive launch updates, exclusive charging discounts, and early access to the NextCharge mobile app.
                         </p>
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                            <Link href="/#waitlist" className="submit-btn" style={{ textDecoration: 'none', display: 'inline-block', width: 'auto', padding: '14px 32px' }}>
+                            <Link href="/#waitlist" className="cta-btn-orange">
                                 Join Waitlist
                             </Link>
-                            <Link href="/#partners" className="submit-btn" style={{ textDecoration: 'none', display: 'inline-block', width: 'auto', padding: '14px 32px', background: 'transparent', border: '1px solid var(--primary-color)' }}>
+                            <Link href="/#partners" className="cta-btn-outline">
                                 Become a Partner
                             </Link>
                         </div>

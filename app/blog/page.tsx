@@ -44,6 +44,9 @@ const blogJsonLd = {
     },
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getAllPublishedPosts() {
     if (!isSupabaseConfigured) return [];
     try {
@@ -53,9 +56,13 @@ async function getAllPublishedPosts() {
             .eq('status', 'published')
             .order('created_at', { ascending: false });
 
-        if (error) return [];
+        if (error) {
+            console.error('Error fetching published posts:', error);
+            return [];
+        }
         return data || [];
-    } catch {
+    } catch (err) {
+        console.error('Exception fetching published posts:', err);
         return [];
     }
 }

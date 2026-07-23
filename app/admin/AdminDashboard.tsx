@@ -39,6 +39,22 @@ function generateSlug(title: string): string {
         .replace(/^-|-$/g, '');
 }
 
+function parseTagList(tagsInput: string[] | string | undefined | null): string[] {
+    if (!tagsInput) return [];
+    if (Array.isArray(tagsInput)) {
+        return Array.from(new Set(
+            tagsInput
+                .flatMap(item => (typeof item === 'string' ? item.split(',') : []))
+                .map(t => t.trim())
+                .filter(Boolean)
+        ));
+    }
+    if (typeof tagsInput === 'string') {
+        return Array.from(new Set(tagsInput.split(',').map(t => t.trim()).filter(Boolean)));
+    }
+    return [];
+}
+
 function showToast(message: string, type: 'success' | 'error' = 'success') {
     const existing = document.querySelector('.toast');
     if (existing) existing.remove();
@@ -189,7 +205,7 @@ export default function AdminDashboard() {
                         setPostExcerpt(draft.excerpt || '');
                         setPostContent(draft.content || '');
                         setPostCategory(draft.category || '');
-                        setPostTags(draft.tags || []);
+                        setPostTags(parseTagList(draft.tags));
                         setPostStatus(draft.status || false);
                         setCoverImageUrl(draft.coverImageUrl || '');
                         setSeoTitle(draft.seoTitle || '');
@@ -297,7 +313,7 @@ export default function AdminDashboard() {
             setPostExcerpt(post.excerpt || '');
             setPostContent(post.content || '');
             setPostCategory(post.category || '');
-            setPostTags([...(post.tags || [])]);
+            setPostTags(parseTagList(post.tags));
             setPostStatus(post.status === 'published');
             setCoverImageUrl(post.cover_image_url || '');
             setSeoTitle(post.seo_title || '');
@@ -330,6 +346,7 @@ export default function AdminDashboard() {
         }
 
         setSaving(true);
+        const finalTags = commitTagInput(tagInput);
         const slug = postSlug.trim() || generateSlug(postTitle);
         const autoExcerpt = postExcerpt.trim() || postContent.replace(/<[^>]*>/g, '').substring(0, 160).trim();
 
@@ -340,7 +357,7 @@ export default function AdminDashboard() {
             excerpt: autoExcerpt,
             cover_image_url: coverImageUrl || null,
             category: postCategory || null,
-            tags: postTags,
+            tags: finalTags,
             status: postStatus ? 'published' : 'draft',
             author: user?.email || '',
             seo_title: seoTitle.trim() || postTitle.trim(),
@@ -394,16 +411,46 @@ export default function AdminDashboard() {
     }
 
     // Tag management
+    function commitTagInput(currentText: string = tagInput): string[] {
+        if (!currentText.trim()) return postTags;
+        const parts = currentText.split(',').map(p => p.trim()).filter(Boolean);
+        let updated = [...postTags];
+        parts.forEach(tag => {
+            if (tag && !updated.includes(tag)) {
+                updated.push(tag);
+            }
+        });
+        setPostTags(updated);
+        setTagInput('');
+        return updated;
+    }
+
+    function handleTagInputChange(value: string) {
+        if (value.includes(',')) {
+            const parts = value.split(',');
+            const endsWithComma = value.endsWith(',');
+            const completedParts = endsWithComma ? parts : parts.slice(0, -1);
+            const remainingInput = endsWithComma ? '' : parts[parts.length - 1];
+
+            let updated = [...postTags];
+            completedParts.forEach(part => {
+                const clean = part.trim();
+                if (clean && !updated.includes(clean)) {
+                    updated.push(clean);
+                }
+            });
+            setPostTags(updated);
+            setTagInput(remainingInput);
+        } else {
+            setTagInput(value);
+        }
+    }
+
     function handleTagKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
-            const tag = tagInput.trim().replace(/,/g, '');
-            if (tag && !postTags.includes(tag)) {
-                setPostTags([...postTags, tag]);
-            }
-            setTagInput('');
-        }
-        if (e.key === 'Backspace' && tagInput === '' && postTags.length > 0) {
+            commitTagInput();
+        } else if (e.key === 'Backspace' && tagInput === '' && postTags.length > 0) {
             setPostTags(postTags.slice(0, -1));
         }
     }
@@ -654,11 +701,20 @@ export default function AdminDashboard() {
                                     <div className="tags-input-wrapper" onClick={() => (document.getElementById('tagInputField') as HTMLInputElement)?.focus()}>
                                         {postTags.map((tag, i) => (
                                             <span key={i} className="tag-pill">
-                                                {escapeHtml(tag)}
-                                                <button type="button" onClick={() => setPostTags(postTags.filter((_, idx) => idx !== i))}>&times;</button>
+                                                {tag}
+                                                <button type="button" onClick={(e) => { e.stopPropagation(); setPostTags(postTags.filter((_, idx) => idx !== i)); }}>&times;</button>
                                             </span>
                                         ))}
-                                        <input type="text" id="tagInputField" className="tags-input" placeholder="Type and press Enter" value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={handleTagKeyDown} />
+                                        <input
+                                            type="text"
+                                            id="tagInputField"
+                                            className="tags-input"
+                                            placeholder="Type tags separated by comma"
+                                            value={tagInput}
+                                            onChange={e => handleTagInputChange(e.target.value)}
+                                            onKeyDown={handleTagKeyDown}
+                                            onBlur={() => commitTagInput()}
+                                        />
                                     </div>
                                 </div>
 

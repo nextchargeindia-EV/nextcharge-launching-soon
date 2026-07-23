@@ -23,6 +23,9 @@ interface PostData {
     updated_at?: string;
 }
 
+export const revalidate = 0;
+export const dynamicParams = true;
+
 async function getPost(slug: string): Promise<PostData | null> {
     if (!isSupabaseConfigured) return null;
     try {

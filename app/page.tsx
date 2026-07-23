@@ -7,6 +7,9 @@ import WaitlistForm from './WaitlistForm';
 import FeedbackForm from './FeedbackForm';
 import PartnerForm from './PartnerForm';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getLatestPosts() {
     if (!isSupabaseConfigured) return [];
     try {
@@ -17,9 +20,13 @@ async function getLatestPosts() {
             .order('created_at', { ascending: false })
             .limit(3);
 
-        if (error) return [];
+        if (error) {
+            console.error('Error fetching latest blog posts:', error);
+            return [];
+        }
         return data || [];
-    } catch {
+    } catch (err) {
+        console.error('Exception fetching latest blog posts:', err);
         return [];
     }
 }

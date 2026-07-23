@@ -19,12 +19,17 @@
     box-sizing: border-box;
 }
 
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-color-1);
     color: var(--text-main);
     min-height: 100vh;
-    overflow-x: hidden;
     position: relative;
     background: radial-gradient(circle at top right, var(--bg-color-2), var(--bg-color-1) 70%);
 }
@@ -778,19 +783,26 @@ input[type="email"]::placeholder {
         flex-direction: column;
         position: fixed;
         top: 0;
-        right: -100%;
+        right: 0;
         width: 250px;
         height: 100vh;
         background: rgba(11, 14, 39, 0.95);
         backdrop-filter: blur(16px);
         padding: 80px 24px 24px;
-        transition: right 0.3s ease;
+        transform: translateX(100%);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
         z-index: 1001;
         box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
     }
 
     .nav-menu-wrapper.active {
-        right: 0;
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
     }
 
     .nav-links {

@@ -170,16 +170,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
                 {/* Post Header */}
                 <div className="post-header">
-                    <Link href="/blog" className="post-back-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="m15 18-6-6 6-6"></path>
-                        </svg>
-                        Back to Blog
-                    </Link>
+                    <div className="post-header-top">
+                        <Link href="/blog" className="post-back-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="m15 18-6-6 6-6"></path>
+                            </svg>
+                            Back to Blog
+                        </Link>
 
-                    {post.category && (
-                        <span className="post-category-badge">{post.category}</span>
-                    )}
+                        {post.category && (
+                            <span className="post-category-badge">{post.category}</span>
+                        )}
+                    </div>
 
                     <h1 className="post-title">{post.title}</h1>
 

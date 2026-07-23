@@ -6,6 +6,7 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import WaitlistForm from './WaitlistForm';
 import FeedbackForm from './FeedbackForm';
 import PartnerForm from './PartnerForm';
+import './blog/blog.css';
 
 export const revalidate = 10;
 
@@ -156,7 +157,7 @@ export default async function Home() {
                         <h2 className="section-title">Latest from our Blog</h2>
                         <p className="section-subtitle">Insights, tips, and updates about the EV ecosystem in India.</p>
 
-                        <div className="blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '28px', maxWidth: '1200px', margin: '0 auto' }}>
+                        <div className="blog-grid">
                             {latestPosts.length > 0 ? (
                                 latestPosts.map((post, index) => (
                                     <BlogCard key={post.id} post={post} index={index} />

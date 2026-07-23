@@ -12,45 +12,6 @@ const EV_MODELS = [
     { id: 'atto3', name: 'BYD Atto 3 (60.4 kWh)', batteryKwh: 60.4, fastChargeMins: 35, kmPerKwh: 6.5 },
 ];
 
-// Corridor dataset
-const HIGHWAY_CORRIDORS = [
-    {
-        id: 'delhi-jaipur',
-        name: 'Delhi ➔ Jaipur (NH48)',
-        distance: '280 km',
-        interval: 'Every 35 km',
-        speed: '120 kW Ultra-Fast DC',
-        amenities: '24/7 Rest Stop, Cafe, Washrooms, Canopy',
-        status: 'Active Hubs',
-    },
-    {
-        id: 'mumbai-pune',
-        name: 'Mumbai ➔ Pune Express',
-        distance: '150 km',
-        interval: 'Every 25 km',
-        speed: '150 kW Dual-Gun DC',
-        amenities: 'Food Court, EV Lounge, 24/7 Security',
-        status: 'Active Hubs',
-    },
-    {
-        id: 'bengaluru-chennai',
-        name: 'Bengaluru ➔ Chennai (NH44)',
-        distance: '340 km',
-        interval: 'Every 40 km',
-        speed: '120 kW Fast DC',
-        amenities: 'Highway Plaza, Coffee Hub, Rest Area',
-        status: 'Expanding',
-    },
-    {
-        id: 'yamuna-expressway',
-        name: 'Delhi ➔ Agra (Yamuna Expy)',
-        distance: '210 km',
-        interval: 'Every 30 km',
-        speed: '100 kW Dual-Gun DC',
-        amenities: 'Plaza Food Court, Family Restroom, Solar Canopy',
-        status: 'Active Hubs',
-    },
-];
 
 // Accordion dataset
 const FAQ_DATA = [
@@ -318,37 +279,7 @@ export default function AboutInteractive() {
                 </div>
             </section>
 
-            {/* Interactive Highway Corridor Explorer */}
-            <section className="section-container" style={{ background: 'rgba(11, 14, 39, 0.7)' }}>
-                <div className="container">
-                    <div style={{ textAlign: 'center', marginBottom: '46px' }}>
-                        <div className="badge" style={{ display: 'inline-block', marginBottom: '12px' }}>
-                            HIGHWAY NETWORK EXPLORER
-                        </div>
-                        <h2 className="section-title">Key Intercity Fast-Charging Corridors</h2>
-                        <p className="section-subtitle">
-                            NextCharge is strategically deploying high-speed DC hubs across critical interstate transit routes.
-                        </p>
-                    </div>
 
-                    <div className="corridor-grid">
-                        {HIGHWAY_CORRIDORS.map(corridor => (
-                            <div key={corridor.id} className="corridor-card">
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '700' }}>{corridor.name}</h3>
-                                    <span className="corridor-tag">{corridor.status}</span>
-                                </div>
-                                <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                    <div>📍 Route Distance: <strong style={{ color: '#fff' }}>{corridor.distance}</strong></div>
-                                    <div>⚡ Station Spacing: <strong style={{ color: 'var(--primary-color)' }}>{corridor.interval}</strong></div>
-                                    <div>🔋 Charger Power: <span style={{ color: '#fff' }}>{corridor.speed}</span></div>
-                                    <div style={{ marginTop: '6px', fontSize: '0.82rem', color: '#8c99a6' }}>✨ Amenities: {corridor.amenities}</div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
 
             {/* Interactive FAQ Accordion */}
             <section className="container" style={{ margin: '90px auto' }}>

@@ -183,39 +183,7 @@
     margin-bottom: 4px;
 }
 
-/* Corridor Cards */
-.corridor-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-}
 
-.corridor-card {
-    background: rgba(245, 246, 241, 0.03);
-    border: 1px solid rgba(245, 246, 241, 0.08);
-    border-radius: 16px;
-    padding: 24px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.corridor-card:hover {
-    background: rgba(255, 90, 34, 0.06);
-    border-color: rgba(255, 90, 34, 0.4);
-    transform: translateY(-4px);
-}
-
-.corridor-tag {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 100px;
-    background: rgba(0, 230, 153, 0.15);
-    color: #00e699;
-    border: 1px solid rgba(0, 230, 153, 0.3);
-    margin-top: 10px;
-}
 
 /* Accordion */
 .accordion-wrapper {

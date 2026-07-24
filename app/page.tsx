@@ -61,7 +61,7 @@ export default async function Home() {
     return (
         <>
             <div className="video-background-container">
-                <Image src="/bg-placeholder.webp" alt="Background" id="bg-image" fill style={{ objectFit: 'cover' }} priority />
+                <Image src="/bg-placeholder.webp" alt="Background" id="bg-image" fill sizes="100vw" quality={75} style={{ objectFit: 'cover' }} priority />
                 <div className="video-overlay"></div>
             </div>
 
@@ -147,7 +147,7 @@ export default async function Home() {
                         <div className="partner-cards">
                             <div className="partner-card">
                                 <div className="partner-img-wrapper">
-                                    <Image src="/hotel.webp" alt="Hotel Owners" className="partner-img" width={400} height={200} style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
+                                    <Image src="/hotel.webp" alt="Hotel Owners" className="partner-img" width={400} height={200} sizes="(max-width: 768px) 100vw, 400px" style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
                                     <span className="partner-badge">Hotels & Resorts</span>
                                 </div>
                                 <h3>Hotel Owners</h3>
@@ -155,7 +155,7 @@ export default async function Home() {
                             </div>
                             <div className="partner-card">
                                 <div className="partner-img-wrapper">
-                                    <Image src="/commercial.jpg" alt="Commercial Properties" className="partner-img" width={400} height={200} style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
+                                    <Image src="/commercial.jpg" alt="Commercial Properties" className="partner-img" width={400} height={200} sizes="(max-width: 768px) 100vw, 400px" style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
                                     <span className="partner-badge">Malls & Retail</span>
                                 </div>
                                 <h3>Commercial Properties</h3>
@@ -163,7 +163,7 @@ export default async function Home() {
                             </div>
                             <div className="partner-card">
                                 <div className="partner-img-wrapper">
-                                    <Image src="/fleet.webp" alt="Fleet Operators" className="partner-img" width={400} height={200} style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
+                                    <Image src="/fleet.webp" alt="Fleet Operators" className="partner-img" width={400} height={200} sizes="(max-width: 768px) 100vw, 400px" style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '16px' }} />
                                     <span className="partner-badge">Fleets & Depots</span>
                                 </div>
                                 <h3>Fleet Operators</h3>

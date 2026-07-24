@@ -24,7 +24,7 @@ export default function Navbar() {
         <nav className="navbar">
             <div className="logo">
                 <Link href="/">
-                    <Image src="/nexq-logo.png" alt="NEXQ" className="nav-logo" width={80} height={20} style={{ width: 'auto', height: 'auto' }} />
+                    <Image src="/nexq-logo.png" alt="NEXQ" className="nav-logo" width={80} height={20} style={{ width: 'auto', height: 'auto' }} priority />
                     <span className="logo-subtitle">NextCharge</span>
                 </Link>
             </div>

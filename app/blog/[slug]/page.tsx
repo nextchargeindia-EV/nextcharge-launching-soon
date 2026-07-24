@@ -164,7 +164,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 {/* Post Hero Image */}
                 <div className="post-hero">
                     {post.cover_image_url ? (
-                        <img src={post.cover_image_url} alt={post.title} />
+                        <img src={post.cover_image_url} alt={post.title} fetchPriority="high" />
                     ) : null}
                 </div>
 

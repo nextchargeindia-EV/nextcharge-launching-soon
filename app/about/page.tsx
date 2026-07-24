@@ -146,6 +146,8 @@ export default function AboutPage() {
                     alt="NextCharge EV Network Background"
                     id="bg-image"
                     fill
+                    sizes="100vw"
+                    quality={75}
                     style={{ objectFit: 'cover' }}
                     priority
                 />

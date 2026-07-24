@@ -58,7 +58,6 @@
     background-clip: text;
     position: relative;
     z-index: 1;
-    animation: fadeInUp 0.8s ease-out;
 }
 
 .blog-hero-subtitle {
@@ -69,7 +68,6 @@
     line-height: 1.6;
     position: relative;
     z-index: 1;
-    animation: fadeInUp 0.8s ease-out 0.15s both;
 }
 
 /* ===== Search Bar ===== */
@@ -78,7 +76,6 @@
     margin: 0 auto 28px;
     position: relative;
     z-index: 1;
-    animation: fadeInUp 0.8s ease-out 0.3s both;
 }
 
 .blog-search-bar input {

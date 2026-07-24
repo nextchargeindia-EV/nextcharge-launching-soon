@@ -252,6 +252,18 @@
     }
 }
 
+.about-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.about-mission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
 /* CTA Buttons */
 .cta-btn-orange {
     background: #ff5a22 !important;
@@ -294,3 +306,116 @@
     transform: translateY(-3px) scale(1.02) !important;
     box-shadow: 0 10px 30px rgba(255, 90, 34, 0.5) !important;
 }
+
+/* ===================================================================
+   Mobile Responsiveness for About Page
+   =================================================================== */
+@media (max-width: 900px) {
+    .about-hero-section {
+        padding-top: 110px !important;
+        padding-bottom: 40px !important;
+    }
+
+    .about-metrics-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+    }
+
+    .about-mission-grid {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+    }
+
+    .glass-box {
+        padding: 26px 20px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .about-hero-section {
+        padding-top: 95px !important;
+        padding-bottom: 30px !important;
+    }
+
+    .about-metrics-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .feature-card {
+        padding: 20px 16px !important;
+    }
+
+    .tabs-header {
+        gap: 8px !important;
+        margin-bottom: 24px !important;
+    }
+
+    .tab-btn {
+        padding: 10px 16px !important;
+        font-size: 0.88rem !important;
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+
+    .tab-content-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .interactive-card {
+        padding: 20px 16px !important;
+        border-radius: 16px !important;
+    }
+
+    .calculator-box {
+        padding: 24px 16px !important;
+        border-radius: 18px !important;
+    }
+
+    .calc-results-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .calc-result-card {
+        padding: 14px !important;
+    }
+
+    .calc-val {
+        font-size: 1.6rem !important;
+    }
+
+    .accordion-header {
+        padding: 16px 18px !important;
+        font-size: 0.95rem !important;
+    }
+
+    .accordion-body {
+        padding: 0 18px 16px 18px !important;
+        font-size: 0.88rem !important;
+    }
+
+    .about-cta-section {
+        padding: 40px 16px !important;
+    }
+
+    .cta-banner-box {
+        padding: 36px 18px !important;
+        border-radius: 20px !important;
+    }
+
+    .cta-buttons-wrapper {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .cta-btn-orange,
+    .cta-btn-outline {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 12px 20px !important;
+        font-size: 0.95rem !important;
+    }
+}
+

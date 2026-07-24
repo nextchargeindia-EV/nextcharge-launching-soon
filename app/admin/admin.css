@@ -396,6 +396,14 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    position: sticky;
+    top: 56px;
+    z-index: 98;
+    background: rgba(11, 14, 39, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .btn-back {
@@ -776,9 +784,31 @@
     border: 1px solid var(--glass-border);
     border-radius: 8px;
     min-height: 42px;
-    align-items: center;
+    max-height: 120px;
+    overflow-y: auto;
+    align-items: flex-start;
     transition: border-color 0.3s ease;
     cursor: text;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.05);
+}
+
+.tags-input-wrapper::-webkit-scrollbar {
+    width: 5px;
+}
+
+.tags-input-wrapper::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+
+.tags-input-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 90, 34, 0.4);
+    border-radius: 4px;
+}
+
+.tags-input-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
 }
 
 .tags-input-wrapper:focus-within {
@@ -1108,8 +1138,15 @@ textarea.seo-field {
 }
 
 @keyframes modalScaleIn {
-    from { opacity: 0; transform: scale(0.95) translateY(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .preview-modal-bar {
@@ -1146,9 +1183,17 @@ textarea.seo-field {
 }
 
 @keyframes previewPulse {
-    0% { opacity: 0.4; }
-    50% { opacity: 1; }
-    100% { opacity: 0.4; }
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
 }
 
 .btn-close-preview {
@@ -1191,26 +1236,33 @@ textarea.seo-field {
    Rich WYSIWYG Text Editor Styles
    =================================================================== */
 .rich-editor-wrapper {
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(15, 23, 42, 0.7);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
+    position: relative;
     overflow: hidden;
     margin-top: 12px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    height: 595px;
+    /* Fixed height for blog writing tab */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .rich-editor-toolbar {
+    position: relative;
+    top: 0;
+    z-index: 20;
+    flex-shrink: 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 6px;
     padding: 10px 14px;
-    background: rgba(30, 41, 59, 0.8);
+    background: #0f172a;
     border-bottom: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
     user-select: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .toolbar-group {
@@ -1319,7 +1371,7 @@ textarea.seo-field {
 
 /* Rich Editor Editable Content Area */
 .rich-editor-content {
-    min-height: 420px;
+    flex: 1;
     padding: 24px;
     color: var(--text-main);
     font-family: 'Inter', sans-serif;
@@ -1327,7 +1379,10 @@ textarea.seo-field {
     line-height: 1.8;
     outline: none;
     overflow-y: auto;
+    /* Internal scrolling when text exceeds fixed height */
     background: transparent;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.05);
 }
 
 .rich-editor-content:empty:before {
@@ -1472,6 +1527,3 @@ textarea.seo-field {
     box-shadow: 0 0 6px #f59e0b;
     animation: previewPulse 1s infinite;
 }
-
-
-

@@ -20,6 +20,7 @@ interface Post {
     author?: string;
     seo_title?: string;
     seo_description?: string;
+    is_featured?: boolean;
     created_at: string;
     updated_at?: string;
 }
@@ -99,6 +100,7 @@ export default function AdminDashboard() {
     const [postTags, setPostTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState('');
     const [postStatus, setPostStatus] = useState(false);
+    const [postIsFeatured, setPostIsFeatured] = useState(true);
     const [coverImageUrl, setCoverImageUrl] = useState('');
     const [seoTitle, setSeoTitle] = useState('');
     const [seoDesc, setSeoDesc] = useState('');
@@ -107,6 +109,10 @@ export default function AdminDashboard() {
     const [showUrlInput, setShowUrlInput] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Site settings state (Main Page Blog Display Range)
+    const [mainPageLimit, setMainPageLimit] = useState<number>(6);
+    const [savingSettings, setSavingSettings] = useState(false);
 
     // Auto-save states
     const [autoSaveStatus, setAutoSaveStatus] = useState<string | null>(null);
@@ -189,9 +195,70 @@ export default function AdminDashboard() {
         setAllPosts(data || []);
     }, []);
 
+    // Fetch site settings (main page blog display limit)
+    const fetchSiteSettings = useCallback(async () => {
+        try {
+            const { data } = await supabase
+                .from('site_settings')
+                .select('value')
+                .eq('key', 'main_page_blog_config')
+                .single();
+            if (data?.value?.limit) {
+                setMainPageLimit(Number(data.value.limit));
+            } else {
+                const localLimit = localStorage.getItem('nextcharge_main_page_blog_limit');
+                if (localLimit) setMainPageLimit(Number(localLimit));
+            }
+        } catch {
+            const localLimit = localStorage.getItem('nextcharge_main_page_blog_limit');
+            if (localLimit) setMainPageLimit(Number(localLimit));
+        }
+    }, []);
+
     useEffect(() => {
-        if (user) fetchPosts();
-    }, [user, fetchPosts]);
+        if (user) {
+            fetchPosts();
+            fetchSiteSettings();
+        }
+    }, [user, fetchPosts, fetchSiteSettings]);
+
+    async function handleSaveSettings() {
+        setSavingSettings(true);
+        try {
+            localStorage.setItem('nextcharge_main_page_blog_limit', String(mainPageLimit));
+            const { error } = await supabase
+                .from('site_settings')
+                .upsert({ key: 'main_page_blog_config', value: { limit: mainPageLimit }, updated_at: new Date().toISOString() });
+            if (error) {
+                console.warn('Could not save to site_settings in Supabase (saved locally):', error);
+            }
+            showToast(`Main page blog limit set to ${mainPageLimit} articles!`);
+        } catch (e) {
+            showToast(`Main page blog limit set to ${mainPageLimit} articles (saved locally)!`);
+        }
+        setSavingSettings(false);
+    }
+
+    async function handleToggleFeatured(postId: string, currentVal: boolean) {
+        const newVal = !currentVal;
+        // Optimistic UI update
+        setAllPosts(prev => prev.map(p => p.id === postId ? { ...p, is_featured: newVal } : p));
+        try {
+            const { error } = await supabase.from('posts').update({ is_featured: newVal }).eq('id', postId);
+            if (error) {
+                console.error('Error toggling is_featured:', error);
+                if (error.code === 'PGRST204' || error.message.includes('is_featured')) {
+                    showToast('Run SQL migration in Supabase SQL Editor to enable is_featured!', 'error');
+                    return;
+                }
+                throw error;
+            }
+            showToast(newVal ? 'Blog will be shown on main page' : 'Blog hidden from main page');
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Error updating status';
+            showToast(msg, 'error');
+        }
+    }
 
     // Auto restore draft on page load or refresh
     useEffect(() => {
@@ -320,6 +387,7 @@ export default function AdminDashboard() {
             setPostCategory(post.category || '');
             setPostTags(parseTagList(post.tags));
             setPostStatus(post.status === 'published');
+            setPostIsFeatured(post.is_featured !== false);
             setCoverImageUrl(post.cover_image_url || '');
             setSeoTitle(post.seo_title || '');
             setSeoDesc(post.seo_description || '');
@@ -337,6 +405,7 @@ export default function AdminDashboard() {
         setPostCategory('');
         setPostTags([]);
         setPostStatus(false);
+        setPostIsFeatured(true);
         setCoverImageUrl('');
         setSeoTitle('');
         setSeoDesc('');
@@ -365,6 +434,7 @@ export default function AdminDashboard() {
             category: postCategory || null,
             tags: finalTags,
             status: postStatus ? 'published' : 'draft',
+            is_featured: postIsFeatured,
             author: user?.email || '',
             seo_title: seoTitle.trim() || postTitle.trim(),
             seo_description: seoDesc.trim() || autoExcerpt,
@@ -373,16 +443,35 @@ export default function AdminDashboard() {
 
         try {
             if (editingPostId) {
-                const { error } = await supabase
+                let { error } = await supabase
                     .from('posts')
                     .update(postData)
                     .eq('id', editingPostId);
+
+                // If is_featured column does not exist yet in Supabase schema, retry without it
+                if (error && (error.code === 'PGRST204' || error.message.includes('is_featured'))) {
+                    const { is_featured, ...postDataWithoutFeatured } = postData;
+                    const retryRes = await supabase
+                        .from('posts')
+                        .update(postDataWithoutFeatured)
+                        .eq('id', editingPostId);
+                    error = retryRes.error;
+                }
                 if (error) throw error;
                 showToast('Post updated successfully!');
             } else {
-                const { error } = await supabase
+                let { error } = await supabase
                     .from('posts')
                     .insert({ ...postData, created_at: new Date().toISOString() });
+
+                // If is_featured column does not exist yet in Supabase schema, retry without it
+                if (error && (error.code === 'PGRST204' || error.message.includes('is_featured'))) {
+                    const { is_featured, ...postDataWithoutFeatured } = postData;
+                    const retryRes = await supabase
+                        .from('posts')
+                        .insert({ ...postDataWithoutFeatured, created_at: new Date().toISOString() });
+                    error = retryRes.error;
+                }
                 if (error) throw error;
                 showToast('Post created successfully!');
             }
@@ -510,11 +599,64 @@ export default function AdminDashboard() {
             <div className="admin-main">
                 {view === 'dashboard' ? (
                     <>
-                        {/* Stats */}
-                        <div className="stats-row">
+                        {/* Stats & Main Page Config */}
+                        <div className="stats-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
                             <div className="stat-card"><div className="stat-number">{allPosts.length}</div><div className="stat-label">Total Posts</div></div>
                             <div className="stat-card"><div className="stat-number stat-published">{published}</div><div className="stat-label">Published</div></div>
                             <div className="stat-card"><div className="stat-number stat-drafts">{drafts}</div><div className="stat-label">Drafts</div></div>
+                        </div>
+
+                        {/* Main Page Display Settings Card */}
+                        <div className="main-page-settings-card" style={{
+                            background: 'rgba(255, 255, 255, 0.03)',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '16px',
+                            padding: '24px',
+                            marginBottom: '32px',
+                            backdropFilter: 'blur(12px)',
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                                <div>
+                                    <h3 style={{ margin: '0 0 6px', fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>
+                                        🏠 Main Page Blog Controls
+                                    </h3>
+                                    <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                                        Set how many blogs display in the sliding row on the home page, and toggle which specific blogs appear.
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={handleSaveSettings}
+                                    disabled={savingSettings}
+                                    className="btn-primary"
+                                    style={{ padding: '8px 20px', fontSize: '0.875rem', borderRadius: '10px' }}
+                                >
+                                    <span>{savingSettings ? 'Saving...' : 'Save Settings'}</span>
+                                </button>
+                            </div>
+
+                            <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+                                <label style={{ fontSize: '0.9rem', color: '#fff', fontWeight: '600' }}>
+                                    Number of Blogs on Main Page: <span style={{ color: 'var(--primary-color)', fontSize: '1.1rem', marginLeft: '6px' }}>{mainPageLimit}</span>
+                                </label>
+                                <input
+                                    type="range"
+                                    min="1"
+                                    max="12"
+                                    value={mainPageLimit}
+                                    onChange={(e) => setMainPageLimit(Number(e.target.value))}
+                                    style={{
+                                        flex: 1,
+                                        minWidth: '150px',
+                                        maxWidth: '300px',
+                                        height: '6px',
+                                        borderRadius: '4px',
+                                        accentColor: 'var(--primary-color)',
+                                        cursor: 'pointer',
+                                    }}
+                                />
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>(1 to 12 articles)</div>
+                            </div>
                         </div>
 
                         {/* Dashboard Header */}
@@ -530,33 +672,65 @@ export default function AdminDashboard() {
                         <div className="posts-table-container">
                             <table className="posts-table">
                                 <thead>
-                                    <tr><th>Title</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Main Page</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     {allPosts.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} style={{ textAlign: 'center', padding: '48px 20px' }}>
+                                            <td colSpan={5} style={{ textAlign: 'center', padding: '48px 20px' }}>
                                                 <div className="no-posts-icon">📝</div>
                                                 <p style={{ color: 'var(--text-muted)' }}>No posts yet. Create your first blog post!</p>
                                             </td>
                                         </tr>
                                     ) : (
-                                        allPosts.map(post => (
-                                            <tr key={post.id}>
-                                                <td>
-                                                    <strong>{post.title}</strong>
-                                                    {post.category && <><br /><small>{post.category}</small></>}
-                                                </td>
-                                                <td><span className={`post-status-badge ${post.status || 'draft'}`}>{post.status || 'draft'}</span></td>
-                                                <td>{new Date(post.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
-                                                <td>
-                                                    <div className="table-actions">
-                                                        <button className="btn-edit" onClick={() => openEditor(post.id)}>Edit</button>
-                                                        <button className="btn-delete" onClick={() => handleDelete(post.id)}>Delete</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
+                                        allPosts.map(post => {
+                                            const isFeatured = post.is_featured !== false;
+                                            return (
+                                                <tr key={post.id}>
+                                                    <td>
+                                                        <strong>{post.title}</strong>
+                                                        {post.category && <><br /><small>{post.category}</small></>}
+                                                    </td>
+                                                    <td><span className={`post-status-badge ${post.status || 'draft'}`}>{post.status || 'draft'}</span></td>
+                                                    <td>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleToggleFeatured(post.id, isFeatured)}
+                                                            title={isFeatured ? 'Visible on Main Page (Click to hide)' : 'Hidden from Main Page (Click to show)'}
+                                                            style={{
+                                                                background: isFeatured ? 'rgba(255, 90, 34, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                                                                border: isFeatured ? '1px solid rgba(255, 90, 34, 0.4)' : '1px solid var(--glass-border)',
+                                                                color: isFeatured ? 'var(--primary-color)' : 'var(--text-muted)',
+                                                                padding: '4px 12px',
+                                                                borderRadius: '50px',
+                                                                fontSize: '0.75rem',
+                                                                fontWeight: '600',
+                                                                cursor: 'pointer',
+                                                                display: 'inline-flex',
+                                                                alignItems: 'center',
+                                                                gap: '6px',
+                                                                transition: 'all 0.2s ease',
+                                                            }}
+                                                        >
+                                                            <span>{isFeatured ? '✨ Shown' : '🚫 Hidden'}</span>
+                                                        </button>
+                                                    </td>
+                                                    <td>{new Date(post.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                                                    <td>
+                                                        <div className="table-actions">
+                                                            <button className="btn-edit" onClick={() => openEditor(post.id)}>Edit</button>
+                                                            <button className="btn-delete" onClick={() => handleDelete(post.id)}>Delete</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
                                     )}
                                 </tbody>
                             </table>
@@ -731,6 +905,18 @@ export default function AdminDashboard() {
                                         <span className="status-label">{postStatus ? 'Published' : 'Draft'}</span>
                                         <label className="toggle-switch">
                                             <input type="checkbox" checked={postStatus} onChange={e => setPostStatus(e.target.checked)} />
+                                            <span className="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Main Page Visibility */}
+                                <div className="sidebar-card">
+                                    <h3>Main Page Visibility</h3>
+                                    <div className="status-toggle">
+                                        <span className="status-label">{postIsFeatured ? 'Shown on Main Page' : 'Hidden from Main Page'}</span>
+                                        <label className="toggle-switch">
+                                            <input type="checkbox" checked={postIsFeatured} onChange={e => setPostIsFeatured(e.target.checked)} />
                                             <span className="toggle-slider"></span>
                                         </label>
                                     </div>

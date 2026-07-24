@@ -17,8 +17,15 @@ CREATE TABLE IF NOT EXISTS posts (
   status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
   author TEXT,
   seo_title TEXT,
-  seo_description TEXT,
+  is_featured BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Site Settings (for main page blog limits and config)
+CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value JSONB NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -58,9 +65,23 @@ CREATE TABLE IF NOT EXISTS partner_inquiries (
 
 -- Enable RLS on all tables
 ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE feedback ENABLE ROW LEVEL SECURITY;
 ALTER TABLE waitlist ENABLE ROW LEVEL SECURITY;
 ALTER TABLE partner_inquiries ENABLE ROW LEVEL SECURITY;
+
+-- Site Settings Policies
+DROP POLICY IF EXISTS "Public can read site settings" ON site_settings;
+CREATE POLICY "Public can read site settings"
+  ON site_settings FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "Admin full access to site settings" ON site_settings;
+CREATE POLICY "Admin full access to site settings"
+  ON site_settings FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
 
 -- Posts Policies
 DROP POLICY IF EXISTS "Public can read published posts" ON posts;

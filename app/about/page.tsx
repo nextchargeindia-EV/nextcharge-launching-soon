@@ -68,9 +68,9 @@ const jsonLd = {
                 "CCS2 DC Fast Charging",
             ],
             sameAs: [
-                "https://instagram.com/nextcharge.india",
-                "https://linkedin.com/company/nextcharge-india",
-                "https://twitter.com/nextchargeindia",
+                "https://www.instagram.com/nextcharge.in/",
+                "https://www.linkedin.com/company/next-charge/",
+                "https://x.com/nextchargeindia",
             ],
         },
         {
@@ -156,12 +156,12 @@ export default function AboutPage() {
                 <Navbar />
 
                 {/* Hero Header */}
-                <section className="container" style={{ paddingTop: '130px', paddingBottom: '60px' }}>
+                <section className="container about-hero-section">
                     <div style={{ textAlign: 'center', maxWidth: '840px', margin: '0 auto' }}>
                         <div className="badge" style={{ display: 'inline-block', marginBottom: '20px' }}>
                             ABOUT NEXTCHARGE (NEXQ)
                         </div>
-                        <h1 className="headline" style={{ fontSize: 'clamp(2.2rem, 5vw, 3.6rem)', lineHeight: '1.2' }}>
+                        <h1 className="headline" style={{ fontSize: 'clamp(2rem, 5vw, 3.6rem)', lineHeight: '1.2' }}>
                             Accelerating India&apos;s Transition to{' '}
                             <span className="highlight-text">Electric Mobility.</span>
                         </h1>
@@ -173,36 +173,30 @@ export default function AboutPage() {
 
                 {/* Key Metrics / Highlights Grid */}
                 <section className="container" style={{ marginBottom: '70px' }}>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                            gap: '20px',
-                        }}
-                    >
+                    <div className="about-metrics-grid">
                         <div className="feature-card" style={cardStyle}>
-                            <div style={numberStyle}>99.9%</div>
+                            <div className="number-style" style={numberStyle}>99.9%</div>
                             <h3 style={cardTitleStyle}>Target Network Uptime</h3>
                             <p style={cardTextStyle}>
                                 Continuous automated monitoring to ensure chargers are operational when you arrive.
                             </p>
                         </div>
                         <div className="feature-card" style={cardStyle}>
-                            <div style={numberStyle}>100kW+</div>
+                            <div className="number-style" style={numberStyle}>100kW+</div>
                             <h3 style={cardTitleStyle}>Ultra-Fast DC Charging</h3>
                             <p style={cardTextStyle}>
                                 Rapid charging capabilities designed to add 200+ km of range in under 25 minutes.
                             </p>
                         </div>
                         <div className="feature-card" style={cardStyle}>
-                            <div style={numberStyle}>AI-Native</div>
+                            <div className="number-style" style={numberStyle}>AI-Native</div>
                             <h3 style={cardTitleStyle}>Smart Route Planning</h3>
                             <p style={cardTextStyle}>
                                 Intelligent elevation, weather, battery degradation, and live charger status calculations.
                             </p>
                         </div>
                         <div className="feature-card" style={cardStyle}>
-                            <div style={numberStyle}>Pan-India</div>
+                            <div className="number-style" style={numberStyle}>Pan-India</div>
                             <h3 style={cardTitleStyle}>Highway Corridors</h3>
                             <p style={cardTextStyle}>
                                 Connecting key national highways and Tier 1, 2, and 3 cities seamlessly.
@@ -212,7 +206,7 @@ export default function AboutPage() {
                 </section>
 
                 {/* Mission & Vision Section */}
-                <section className="section-container" style={{ background: 'rgba(11, 14, 39, 0.65)' }}>
+                <section className="section-container about-mission-section" style={{ background: 'rgba(11, 14, 39, 0.65)' }}>
                     <div className="container">
                         <div style={{ textAlign: 'center', marginBottom: '50px' }}>
                             <h2 className="section-title">Our Vision & Mission</h2>
@@ -221,14 +215,8 @@ export default function AboutPage() {
                             </p>
                         </div>
 
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                                gap: '30px',
-                            }}
-                        >
-                            <div style={glassBoxStyle}>
+                        <div className="about-mission-grid">
+                            <div className="glass-box" style={glassBoxStyle}>
                                 <div style={iconBadgeStyle}>🎯</div>
                                 <h3 style={{ fontSize: '1.4rem', fontWeight: '700', marginBottom: '14px', color: 'var(--primary-color)' }}>
                                     The Challenge We are Solving
@@ -238,7 +226,7 @@ export default function AboutPage() {
                                 </p>
                             </div>
 
-                            <div style={glassBoxStyle}>
+                            <div className="glass-box" style={glassBoxStyle}>
                                 <div style={iconBadgeStyle}>🚀</div>
                                 <h3 style={{ fontSize: '1.4rem', fontWeight: '700', marginBottom: '14px', color: 'var(--primary-color)' }}>
                                     Our Solution
@@ -255,15 +243,15 @@ export default function AboutPage() {
                 <AboutInteractive />
 
                 {/* Call To Action Banner */}
-                <section className="container" style={{ padding: '80px 24px', textAlign: 'center' }}>
-                    <div style={ctaBannerStyle}>
-                        <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: '16px' }}>
+                <section className="container about-cta-section" style={{ padding: '80px 24px', textAlign: 'center' }}>
+                    <div className="cta-banner-box" style={ctaBannerStyle}>
+                        <h2 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: '16px' }}>
                             Be Part of India&apos;s EV Revolution
                         </h2>
-                        <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', maxWidth: '650px', margin: '0 auto 30px' }}>
+                        <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', maxWidth: '650px', margin: '0 auto 30px' }}>
                             Join our early access waitlist to receive launch updates, exclusive charging discounts, and early access to the NextCharge mobile app.
                         </p>
-                        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <div className="cta-buttons-wrapper" style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
                             <Link href="/#waitlist" className="cta-btn-orange">
                                 Join Waitlist
                             </Link>

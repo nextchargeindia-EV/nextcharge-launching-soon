@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import BlogCard from '@/components/BlogCard';
+import MainBlogSlider from '@/components/MainBlogSlider';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import WaitlistForm from './WaitlistForm';
 import FeedbackForm from './FeedbackForm';
@@ -12,19 +12,43 @@ export const revalidate = 10;
 
 async function getLatestPosts() {
     if (!isSupabaseConfigured) return [];
+    let limit = 6;
     try {
+        const { data: settingData } = await supabase
+            .from('site_settings')
+            .select('value')
+            .eq('key', 'main_page_blog_config')
+            .single();
+        if (settingData?.value?.limit) {
+            limit = Number(settingData.value.limit);
+        }
+    } catch {
+        // Fallback default limit is 6
+    }
+
+    try {
+        // Attempt query with is_featured filter
         const { data, error } = await supabase
+            .from('posts')
+            .select('id, title, slug, excerpt, cover_image_url, category, created_at, content, is_featured')
+            .eq('status', 'published')
+            .neq('is_featured', false)
+            .order('created_at', { ascending: false })
+            .limit(limit);
+
+        if (!error && data) {
+            return data;
+        }
+
+        // Fallback if is_featured column does not exist yet
+        const { data: fallbackData } = await supabase
             .from('posts')
             .select('id, title, slug, excerpt, cover_image_url, category, created_at, content')
             .eq('status', 'published')
             .order('created_at', { ascending: false })
-            .limit(3);
+            .limit(limit);
 
-        if (error) {
-            console.error('Error fetching latest blog posts:', error);
-            return [];
-        }
-        return data || [];
+        return fallbackData || [];
     } catch (err) {
         console.error('Exception fetching latest blog posts:', err);
         return [];
@@ -157,19 +181,7 @@ export default async function Home() {
                         <h2 className="section-title">Latest from our Blog</h2>
                         <p className="section-subtitle">Insights, tips, and updates about the EV ecosystem in India.</p>
 
-                        <div className="blog-grid">
-                            {latestPosts.length > 0 ? (
-                                latestPosts.map((post, index) => (
-                                    <BlogCard key={post.id} post={post} index={index} />
-                                ))
-                            ) : (
-                                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px 0' }}>
-                                    <div style={{ fontSize: '2.5rem', marginBottom: '12px', opacity: 0.4 }}>📭</div>
-                                    <h3>No articles published yet</h3>
-                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9375rem', marginTop: '4px' }}>Check back soon for latest insights!</p>
-                                </div>
-                            )}
-                        </div>
+                        <MainBlogSlider posts={latestPosts} />
 
                         <div className="blog-view-all-container">
                             <a href="/blog" className="btn-primary">

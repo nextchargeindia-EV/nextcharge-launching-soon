@@ -89,19 +89,19 @@ export default function AboutInteractive() {
                         className={`tab-btn${activeTab === 'drivers' ? ' active' : ''}`}
                         onClick={() => setActiveTab('drivers')}
                     >
-                        <span>🚗</span> EV Drivers
+                        EV Drivers
                     </button>
                     <button
                         className={`tab-btn${activeTab === 'hosts' ? ' active' : ''}`}
                         onClick={() => setActiveTab('hosts')}
                     >
-                        <span>🏨</span> Property & Highway Hosts
+                        Property & Highway Hosts
                     </button>
                     <button
                         className={`tab-btn${activeTab === 'fleets' ? ' active' : ''}`}
                         onClick={() => setActiveTab('fleets')}
                     >
-                        <span>🚚</span> Commercial Fleets
+                        Commercial Fleets
                     </button>
                 </div>
 
@@ -111,7 +111,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">Zero Range Anxiety</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                ⚡ Live Charger Telematics
+                                Live Charger Telematics
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 Know before you arrive. Check real-time gun status, queue status, charging speeds, and price per kWh directly on the NextCharge unified app.
@@ -120,7 +120,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">AI Intelligence</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                🗺️ Predictive Route Planner
+                                Predictive Route Planner
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 Automatically plans your charging stops based on battery state-of-charge, air conditioning consumption, and terrain elevation profile.
@@ -129,7 +129,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">Frictionless Pay</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                📲 1-Tap Auto-Plug & Charge
+                                1-Tap Auto-Plug & Charge
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 Plug in the CCS2 gun and charging starts automatically via encrypted RFID or wallet integration with instant invoice receipts.
@@ -143,7 +143,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">Passive Revenue</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                💰 Turn Idle Parking Into Profit
+                                Turn Idle Parking Into Profit
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 Earn automated monthly revenue shares on every unit of power sold at your hotel, highway restaurant, shopping complex, or parking space.
@@ -152,7 +152,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">Turnkey Hardware</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                🛠️ Full Installation & Maintenance
+                                Full Installation & Maintenance
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 NextCharge handles site engineering, transformer load balancing, 24/7 remote monitoring, and physical maintenance.
@@ -161,7 +161,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">Increased Footfall</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                📍 High-Value Customer Footfall
+                                High-Value Customer Footfall
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 Attract premium EV drivers to your venue who stay and spend at your restaurant or retail store while their vehicle charges.
@@ -175,7 +175,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">High Uptime</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                ⚡ Dedicated Fast Charging Hubs
+                                Dedicated Fast Charging Hubs
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 Guaranteed charging slot reservations and high-speed DC depots tailored for 2W, 3W, and 4W commercial delivery fleets.
@@ -184,7 +184,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">Central Control</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                📊 Fleet Management Dashboard
+                                Fleet Management Dashboard
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 Real-time driver telemetry, centralized billing, automated GST invoicing, and custom API integrations for logistic fleets.
@@ -193,7 +193,7 @@ export default function AboutInteractive() {
                         <div className="interactive-card">
                             <span className="card-badge-pill">Cost Optimization</span>
                             <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '12px', fontWeight: '700' }}>
-                                🏷️ Bulk Corporate Rates
+                                Bulk Corporate Rates
                             </h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>
                                 Enjoy discounted off-peak tariff rates and customized billing contracts for high-volume commercial electric vehicle operations.
@@ -239,7 +239,7 @@ export default function AboutInteractive() {
                             <div className="range-slider-wrapper">
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', fontSize: '0.92rem', fontWeight: '600', marginBottom: '8px' }}>
                                     <span>Monthly Driving Distance:</span>
-                                    <span style={{ color: 'var(--primary-color)', fontWeight: '800' }}>{monthlyKm.toLocaleString()} km / month</span>
+                                    <span style={{ color: 'var(--primary-color)', fontWeight: '800' }} suppressHydrationWarning>{monthlyKm.toLocaleString('en-IN')} km / month</span>
                                 </div>
                                 <input
                                     type="range"
@@ -261,7 +261,7 @@ export default function AboutInteractive() {
                         {/* Calculated Results */}
                         <div className="calc-results-grid">
                             <div className="calc-result-card">
-                                <div className="calc-val">₹{annualSavings.toLocaleString()}</div>
+                                <div className="calc-val" suppressHydrationWarning>₹{annualSavings.toLocaleString('en-IN')}</div>
                                 <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '600' }}>Annual Petrol Savings</div>
                             </div>
 
@@ -271,7 +271,7 @@ export default function AboutInteractive() {
                             </div>
 
                             <div className="calc-result-card">
-                                <div className="calc-val">{co2SavedKg.toLocaleString()} kg</div>
+                                <div className="calc-val" suppressHydrationWarning>{co2SavedKg.toLocaleString('en-IN')} kg</div>
                                 <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '600' }}>CO₂ Emissions Offset / Yr</div>
                             </div>
                         </div>

@@ -35,12 +35,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         };
     });
 
+    /* 
+     * NOTE: The following sections (cityPages, highwayPages, evPages, calcPages)
+     * are commented out until the corresponding dynamic page routes are implemented in the app directory.
+     * Uncomment these as the page components are built to include them in the sitemap.
+     */
+
+    /*
     // City pages (Tier 1, Tier 2, Tier 3 Local SEO & GEO Hubs)
     const cities = [
-        // Tier 1 Cities
         'delhi', 'mumbai', 'bangalore', 'hyderabad', 'chennai', 'kolkata', 'pune', 'ahmedabad',
-
-        // Tier 2 Cities
         'jaipur', 'surat', 'lucknow', 'kanpur', 'nagpur', 'indore', 'bhopal', 'visakhapatnam',
         'patna', 'vadodara', 'ghaziabad', 'ludhiana', 'agra', 'nashik', 'faridabad', 'meerut',
         'rajkot', 'varanasi', 'srinagar', 'chhatrapati-sambhaji-nagar', 'dhanbad', 'amritsar',
@@ -51,8 +55,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         'bhiwandi', 'saharanpur', 'guntur', 'amravati', 'noida', 'jamshedpur', 'bhilai', 'cuttack',
         'firozabad', 'kochi', 'nellore', 'bhavnagar', 'dehradun', 'durgapur', 'asansol', 'rourkela',
         'nanded', 'kolhapur', 'ajmer', 'gulbarga', 'jamnagar', 'ujjain', 'siliguri', 'jhansi',
-
-        // Tier 3 Cities & Regional EV Transit Hubs
         'satara', 'sangli', 'latur', 'karad', 'ratnagiri', 'ahmednagar', 'jalgaon', 'dhule',
         'solan', 'shimla', 'dharamshala', 'mandi', 'haridwar', 'rishikesh', 'roorkee', 'haldwani',
         'rudrapur', 'mathura', 'vrindavan', 'ayodhya', 'gorakhpur', 'muzaffarnagar', 'jhajjar',
@@ -108,6 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'monthly' as const,
         priority: 0.7,
     }));
+    */
 
-    return [...staticPages, ...blogPages, ...cityPages, ...highwayPages, ...evPages, ...calcPages];
+    return [...staticPages, ...blogPages];
 }
